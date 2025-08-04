@@ -119,29 +119,13 @@ To digitize and streamline food ordering for customers, while giving vendors and
 
 ---
 
-## 📂 Folder Structure (Backend)
-
-choplife-api/
-├── controllers/
-├── routes/
-├── models/
-├── middlewares/
-├── utils/
-├── config/
-├── app.js
-├── server.js
-├── .env
-
-yaml
+📂 Folder Structure (Backend)
+<pre> choplife-api/ ├── controllers/ ├── routes/ ├── models/ ├── middlewares/ ├── utils/ ├── config/ ├── app.js ├── server.js ├── .env </pre>
+🚀 Getting Started (Backend)
+1. Clone the Repo
+bash
 Copy
 Edit
-
----
-
-## 🚀 Getting Started (Backend)
-
-### 1. Clone the Repo
-```bash
 git clone https://github.com/your-username/choplife-api.git
 cd choplife-api
 2. Install Dependencies
@@ -200,4 +184,5 @@ SaaS multi-tenancy mode
 Anthony – @yourGithub
 
 📄 License
+MIT Licensese
 MIT License
