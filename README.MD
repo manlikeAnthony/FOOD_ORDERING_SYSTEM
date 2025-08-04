@@ -38,10 +38,10 @@ To digitize and streamline food ordering for customers, while giving vendors and
 
 ### 🧾 Authentication & Authorization
 
-- Secure login/register using JWT and HTTP-only cookies
-- Role-Based Access Control (RBAC): `user`, `vendor`, `admin`
-- Refresh tokens (optional for multi-session auth)
-- Route-level and action-level protection
+- Secure login/register using JWT and HTTP-only cookies  
+- Role-Based Access Control (RBAC): `user`, `vendor`, `admin`  
+- Refresh tokens (optional for multi-session auth)  
+- Route-level and action-level protection  
 
 ---
 
@@ -58,12 +58,12 @@ To digitize and streamline food ordering for customers, while giving vendors and
 
 ### 🛒 Cart & Order System
 
-- Persistent cart per user
-- Order creation from cart
-- Order status management:
-  - `Pending → Accepted → Preparing → Out for delivery → Delivered`
-- Vendor sees and updates order status
-- Admin sees full order flow
+- Persistent cart per user  
+- Order creation from cart  
+- Order status management:  
+  `Pending → Accepted → Preparing → Out for delivery → Delivered`  
+- Vendor sees and updates order status  
+- Admin sees full order flow  
 
 ---
 
@@ -80,10 +80,10 @@ To digitize and streamline food ordering for customers, while giving vendors and
 
 ### ⭐ Ratings & Reviews
 
-- Only users who ordered can review
-- 1–5 star rating + comment
-- Vendor's products get aggregated ratings
-- Admin can delete inappropriate reviews
+- Only users who ordered can review  
+- 1–5 star rating + comment  
+- Vendor's products get aggregated ratings  
+- Admin can delete inappropriate reviews  
 
 ---
 
@@ -109,18 +109,29 @@ To digitize and streamline food ordering for customers, while giving vendors and
 
 ## 🧪 Tech Stack
 
-| Layer            | Stack                                     |
-|------------------|-------------------------------------------|
-| **Backend**      | Node.js, Express.js, MongoDB (Mongoose)   |
-| **Frontend**     | React.js or Next.js                       |
+| Layer             | Stack                                    |
+|-------------------|------------------------------------------|
+| **Backend**       | Node.js, Express.js, MongoDB (Mongoose)  |
+| **Frontend**      | React.js or Next.js                      |
 | **Authentication**| JWT, bcrypt, Role-Based Access           |
-| **Payments**     | Paystack, Flutterwave, Stripe (Planned)   |
-| **State Mgmt**   | Redux Toolkit or Context API              |
+| **Payments**      | Paystack, Flutterwave, Stripe (Planned)  |
+| **State Mgmt**    | Redux Toolkit or Context API             |
 
 ---
 
-📂 Folder Structure (Backend)
-<pre> choplife-api/ ├── controllers/ ├── routes/ ├── models/ ├── middlewares/ ├── utils/ ├── config/ ├── app.js ├── server.js ├── .env </pre>
+## 📂 Folder Structure (Backend)
+
+```bash
+choplife-api/
+├── controllers/
+├── routes/
+├── models/
+├── middlewares/
+├── utils/
+├── config/
+├── app.js
+├── server.js
+├── .env
 🚀 Getting Started (Backend)
 1. Clone the Repo
 bash
@@ -184,5 +195,4 @@ SaaS multi-tenancy mode
 Anthony – @yourGithub
 
 📄 License
-MIT Licensese
 MIT License
