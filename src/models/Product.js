@@ -46,6 +46,14 @@ const ProductSchema = new mongoose.Schema(
       type: [String], // e.g. ["vegan", "gluten-free"]
       default: [],
     },
+    flagged: {
+      type: String,
+      enum: {
+        values: ["red", "orange", "green", "none"],
+        message: "{VALUE} is not supported color",
+      },
+      default: "none",
+    },
   },
   { timestamps: true }
 );

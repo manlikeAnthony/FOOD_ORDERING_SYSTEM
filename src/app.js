@@ -23,6 +23,7 @@ const { webhook } = require("./controllers/paymentController");
 const authRouter = require("./routes/authRoutes");
 const paymentRouter = require("./routes/paymentRoutes");
 const vendorRouter = require("./routes/vendorRoutes")
+const productRoutes = require('./routes/productRoutes')
 
 app.post(
   "/api/v1/payment/webhook",
@@ -52,6 +53,7 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/payment", paymentRouter);
 app.use("/api/v1/vendor", vendorRouter);
+app.use("/api/v1/product", productRoutes);
 
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);

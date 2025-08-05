@@ -26,11 +26,17 @@ const UserSchema = new mongoose.Schema({
       message: "please provide a valid email",
     },
   },
- role: {
+  role: {
     type: String,
-    enum: ["admin", "user","vendor"],
+    enum: ["admin", "user", "vendor"],
     default: "user",
   },
+  favorites: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
   verificationToken: {
     type: String,
   },
@@ -38,7 +44,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  verified : Date,
+  verified: Date,
   passwordToken: {
     type: String,
   },
@@ -47,15 +53,15 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-UserSchema.pre('save', async function(){
-    if(!this.isModified('password')) return
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password , salt)
-})
+UserSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
-UserSchema.methods.comparePassword= async function(candidatePassword){
-    const isMatch = await bcrypt.compare(candidatePassword,this.password)
-    return isMatch
-}
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+};
 
-module.exports = mongoose.model('User' , UserSchema)
+module.exports = mongoose.model("User", UserSchema);
