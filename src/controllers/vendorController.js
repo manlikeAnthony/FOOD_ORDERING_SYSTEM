@@ -25,7 +25,7 @@ const applyAsVendor = async (req, res) => {
 };
 
 const getMyVendorProfile = async (req, res) => {
-  const vendor = await Vendor.findOne({ user: req.user.userId });
+  const vendor = await Vendor.findOne({ user: req.user.userId }).populate({path: "products" , select : "name description price category image"});
   if (!vendor) throw new CustomError.NotFoundError("No vendor profile found");
   res.status(200).json({ vendor });
 };

@@ -39,4 +39,14 @@ const VendorSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
+VendorSchema.virtual("products" , {
+  ref : "Product",
+  localField:"_id",
+  foreignField:"vendor",
+  justOne : false,
+})
+
+VendorSchema.pre('deleteOne' ,{ document: true, query: false }, async function(next){
+    await this.model('Product').deleteMany({vendor: this._id})
+})
 module.exports = mongoose.model('Vendor', VendorSchema);
