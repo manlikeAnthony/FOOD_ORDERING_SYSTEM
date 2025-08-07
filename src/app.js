@@ -18,7 +18,7 @@ const connectDB = require("./database/connect");
 //middleware
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
-const { webhook } = require("./controllers/paymentController");
+const { webhook } = require("./controllers/orderController");
 //routes
 const authRouter = require("./routes/authRoutes");
 const paymentRouter = require("./routes/paymentRoutes");
