@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Vendor = require("../models/Vendor");
 const CustomError = require("../errors");
+const { checkPermissions } = require("../utils");
 
 const applyAsVendor = async (req, res) => {
   const existing = await Vendor.findOne({ user: req.user.userId });
@@ -25,7 +26,10 @@ const applyAsVendor = async (req, res) => {
 };
 
 const getMyVendorProfile = async (req, res) => {
-  const vendor = await Vendor.findOne({ user: req.user.userId }).populate({path: "products" , select : "name description price category image"});
+  const vendor = await Vendor.findOne({ user: req.user.userId }).populate({
+    path: "products",
+    select: "name description price category image",
+  });
   if (!vendor) throw new CustomError.NotFoundError("No vendor profile found");
   res.status(200).json({ vendor });
 };
@@ -33,7 +37,7 @@ const getMyVendorProfile = async (req, res) => {
 const updateVendorProfile = async (req, res) => {
   const vendor = await Vendor.findOne({ user: req.user.userId });
   if (!vendor) throw new CustomError.NotFoundError("No vendor profile found");
-
+  checkPermissions(req.user, vendor.user);
   const updatedVendor = await Vendor.findOneAndUpdate(
     { user: req.user.userId },
     req.body,
@@ -54,4 +58,4 @@ const updateVendorProfile = async (req, res) => {
 //   res.status(200).json({ count: products.length, products });
 // };
 
-module.exports = { applyAsVendor, getMyVendorProfile , updateVendorProfile };
+module.exports = { applyAsVendor, getMyVendorProfile, updateVendorProfile };

@@ -51,19 +51,29 @@ const getCart = async (req, res) => {
     throw new CustomError.NotFoundError("Cart not found");
   }
 
-  res.status(StatusCodes.OK).json({ cart });
+  res.status(StatusCodes.OK).json({ count: cart.length ,cart });
 };
 
 // Remove one product from cart
 const removeFromCart = async (req, res) => {
   const { productId } = req.params;
-  const cart = await Cart.findOne({ user: req.user.userId });
+  const cart = await Cart.findOne({ user: req.user.userId }).populate(
+    "items.product",
+    "name price image"
+  );
+
   if (!cart) {
     throw new CustomError.NotFoundError("Cart not found");
   }
+  const initialLength = cart.items.length;
   cart.items = cart.items.filter(
-    (item) => item.product.toString() !== productId
+    (item) => item.product._id.toString() !== productId
   );
+
+  if (cart.items.length === initialLength) {
+    throw new CustomError.NotFoundError("Product not found in cart");
+  }
+
   await cart.save();
 
   res.status(StatusCodes.OK).json({ msg: "Item removed", cart });

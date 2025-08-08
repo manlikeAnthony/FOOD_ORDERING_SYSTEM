@@ -1,11 +1,12 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
-const CustomError = require('../errors')
+const CustomError = require("../errors");
 
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const { checkPermissions } = require("../utils");
 
 const createOrder = async (req, res) => {
   const userId = req.user.userId;
@@ -77,7 +78,7 @@ const createOrder = async (req, res) => {
   });
 };
 
-
+// stripe listen --forward-to localhost:5000/api/v1/order/webhook
 const webhook = async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -89,7 +90,9 @@ const webhook = async (req, res) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (err) {
-    return res.status(StatusCodes.BAD_REQUEST).send(`Webhook Error: ${err.message}`);
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .send(`Webhook Error: ${err.message}`);
   }
 
   if (event.type === "checkout.session.completed") {
@@ -102,34 +105,33 @@ const webhook = async (req, res) => {
       console.log(`Order ${orderId} marked as paid`);
     }
   }
-
   res.json({ received: true });
 };
 
 const getAllOrders = async (req, res) => {
-  const orders = await Order.find({}).populate("user", "name email");//for admin
+  const orders = await Order.find({}).populate("user", "name email"); // admin protected
   res.status(StatusCodes.OK).json({ count: orders.length, orders });
 };
 
-const getMyOrders = async (req, res) => {
+const getAllMyOrders = async (req, res) => {
   const orders = await Order.find({ user: req.user.userId });
   res.status(StatusCodes.OK).json({ count: orders.length, orders });
 };
 
 const getSingleOrder = async (req, res) => {
-  const order = await Order.findById(req.params.id).populate("orderItems.product");
+  const { id: orderId } = req.params;
+  const order = await Order.findOne({ _id: orderId }).populate(
+    "orderItems.product"
+  );
   if (!order) throw new CustomError.NotFoundError("Order not found");
-
-  // Only owner or admin can view
-  if (req.user.role !== "admin" && order.user.toString() !== req.user.userId) {
-    throw new CustomError.UnauthorizedError("Not allowed to view this order");
-  }
-
+  
+  checkPermissions(req.user, order.user);
   res.status(StatusCodes.OK).json({ order });
 };
 
 const updateOrderStatus = async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const { id: orderId } = req.params;
+  const order = await Order.findOne({ _id: orderId });
   if (!order) throw new CustomError.NotFoundError("Order not found");
 
   order.status = req.body.status || order.status;
@@ -139,12 +141,11 @@ const updateOrderStatus = async (req, res) => {
 };
 
 const cancelOrder = async (req, res) => {
-  const order = await Order.findById(req.params.id);
+  const { id: orderId } = req.params;
+  const order = await Order.findOne({ _id: orderId });
   if (!order) throw new CustomError.NotFoundError("Order not found");
 
-  if (order.user.toString() !== req.user.userId) {
-    throw new CustomError.UnauthorizedError("Not allowed to cancel this order");
-  }
+  checkPermissions(req.user, order.user);
 
   if (order.status === "paid") {
     throw new CustomError.BadRequestError("Cannot cancel a paid order");
@@ -154,9 +155,12 @@ const cancelOrder = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "Order canceled" });
 };
 
-
-
 module.exports = {
   createOrder,
   webhook,
+  getAllOrders,
+  getAllMyOrders,
+  getSingleOrder,
+  updateOrderStatus,
+  cancelOrder
 };
