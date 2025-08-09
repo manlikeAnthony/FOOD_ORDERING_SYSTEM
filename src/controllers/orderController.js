@@ -15,7 +15,6 @@ const createOrder = async (req, res) => {
     "items.product",
     "name price"
   );
-
   if (!cart || cart.items.length === 0) {
     throw new CustomError.BadRequestError("Your cart is empty");
   }
