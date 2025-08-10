@@ -5,17 +5,20 @@ const CustomError = require("../errors");
 
 // Add item or update quantity
 const addToCart = async (req, res) => {
+  const { productId, quantity } = req.body;
+  const userId = req.user.userId;
   try {
-    const { productId, quantity } = req.body;
-    const userId = req.user.userId;
-
     if (!productId || !quantity) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ msg: "Product ID and quantity required" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Product ID and quantity required" });
     }
 
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ msg: "Product not found" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Product not found" });
     }
 
     let cart = await Cart.findOne({ user: userId });
@@ -26,7 +29,9 @@ const addToCart = async (req, res) => {
         items: [{ product: productId, quantity }],
       });
     } else {
-      const index = cart.items.findIndex((item) => item.product.toString() === productId);
+      const index = cart.items.findIndex(
+        (item) => item.product.toString() === productId
+      );
 
       if (index !== -1) {
         cart.items[index].quantity = quantity;
@@ -51,7 +56,9 @@ const getCart = async (req, res) => {
     );
 
     if (!cart) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ msg: "Cart not found" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Cart not found" });
     }
 
     res.status(StatusCodes.OK).json({ count: cart.items.length, cart });
@@ -69,7 +76,9 @@ const removeFromCart = async (req, res) => {
     );
 
     if (!cart) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ msg: "Cart not found" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Cart not found" });
     }
 
     const initialLength = cart.items.length;
@@ -78,7 +87,9 @@ const removeFromCart = async (req, res) => {
     );
 
     if (cart.items.length === initialLength) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ msg: "Product not found in cart" });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Product not found in cart" });
     }
 
     await cart.save();

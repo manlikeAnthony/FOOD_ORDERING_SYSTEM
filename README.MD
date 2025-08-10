@@ -1,6 +1,6 @@
-# 🍽️ ChopLife – Food Ordering System
+#  Food Ordering System
 
-**ChopLife** is a modern full-stack food ordering system that connects users with food vendors and enables seamless online food purchases. It features secure authentication, multi-role dashboards, dynamic menu management, cart + order processing, and admin oversight.
+This a modern full-stack food ordering system that connects users with food vendors and enables seamless online food purchases. It features secure authentication, multi-role dashboards, dynamic menu management, cart + order processing, and admin oversight.
 
 ---
 
