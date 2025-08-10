@@ -13,15 +13,16 @@ const {
   authenticateUser,
   authorizeRoles,
 } = require("../middleware/authentication");
+const { getSingleProductReviews } = require("../controllers/reviewController");
 
 router
   .route("/")
   .post([authenticateUser, authorizeRoles("vendor")], createProduct)
   .get(authenticateUser, getAllProducts);
 
-router.route('/vendor/:id').get(authenticateUser , getVendorProducts)
+router.route("/vendor/:id").get(authenticateUser, getVendorProducts);
 
-router.route('/:id/favorite').post(authenticateUser , toggleFavorite)
+router.route("/:id/favorite").post(authenticateUser, toggleFavorite);
 
 router
   .route("/:id")
@@ -29,4 +30,6 @@ router
   .patch([authenticateUser, authorizeRoles("vendor")], updateProduct)
   .delete([authenticateUser, authorizeRoles("vendor")], deleteProduct);
 
-  module.exports = router;
+router.route("/:id/reviews").get(getSingleProductReviews);
+
+module.exports = router;

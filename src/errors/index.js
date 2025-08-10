@@ -3,10 +3,13 @@ const UnauthenticatedError = require('./unauthenticated');
 const NotFoundError = require('./not-found');
 const BadRequestError = require('./bad-request');
 const UnauthorizedError = require('./unauthorized');
+const InternalServerError = require('./InternalServerError');
+
 module.exports = {
   CustomAPIError,
   UnauthenticatedError,
   NotFoundError,
+  InternalServerError,
   BadRequestError,
   UnauthorizedError,
 };

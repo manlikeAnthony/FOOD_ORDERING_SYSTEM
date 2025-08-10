@@ -46,6 +46,16 @@ const ProductSchema = new mongoose.Schema(
       type: [String], // e.g. ["vegan", "gluten-free"]
       default: [],
     },
+    averageRating :{
+        type: Number,
+        min : [0 , 'average rating cannot be less than 0'],
+        max : [5 , 'average rating cannot be more than 5'],
+        default : 0,
+    },
+    numOfReview:{
+        type:Number,
+        default:0
+    },
     flagged: {
       type: String,
       enum: {
@@ -55,7 +65,12 @@ const ProductSchema = new mongoose.Schema(
       default: "none",
     },
   },
-  { timestamps: true }
+  {timestamps:true , toJSON :{virtuals : true}, toObject:{virtuals: true}}
 );
-
+ProductSchema.virtual('reviews' , {
+    ref:'Review',
+    localField:'_id',
+    foreignField: 'product',
+    justOne : false,
+})
 module.exports = mongoose.model("Product", ProductSchema);

@@ -24,7 +24,7 @@ const OrderSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
-    clientSecret: { type: String, required: true },
+    clientSecret: { type: String, required: false },
     paymentIntentId: { type: String },
     user: {
       type: mongoose.Schema.ObjectId,

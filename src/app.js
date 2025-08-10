@@ -25,7 +25,8 @@ const authRouter = require("./routes/authRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const vendorRouter = require("./routes/vendorRoutes")
 const productRoutes = require('./routes/productRoutes')
-const cartRoutes = require('./routes/cartRoutes')
+const cartRouter = require('./routes/cartRoutes')
+const reviewRouter = require('./routes/reviewRoutes')
 
 app.post(
   "/api/v1/order/webhook",
@@ -55,8 +56,9 @@ app.use(morgan("dev"));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/vendor", vendorRouter);
 app.use("/api/v1/product", productRoutes);
-app.use("/api/v1/cart", cartRoutes);
+app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/order", orderRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
