@@ -14,7 +14,7 @@ const addToCart = async (req, res) => {
         .json({ msg: "Product ID and quantity required" });
     }
 
-    const product = await Product.findById(productId);
+    const product = await Product.findOne({product : productId});
     if (!product) {
       return res
         .status(StatusCodes.BAD_REQUEST)
