@@ -3,7 +3,8 @@ require("express-async-errors");
 
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const CONFIG = require('./config/index')
+
 //pakages
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -15,6 +16,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 
 // database
 const connectDB = require("./database/connect");
+
 //middleware
 const errorHandlerMiddleware = require("./middleware/error-handler");
 const notFoundMiddleware = require("./middleware/not-found");
@@ -49,7 +51,7 @@ app.use(mongoSanitize());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser(process.env.JWT_SECRET));
+app.use(cookieParser(CONFIG.JWT_CREDENTIAL.secret));
 
 app.use(morgan("dev"));
 
@@ -62,10 +64,11 @@ app.use("/api/v1/reviews", reviewRouter);
 
 app.use(errorHandlerMiddleware);
 app.use(notFoundMiddleware);
+
 const start = async () => {
   try {
-    await connectDB(process.env.MONGO_URL);
-    app.listen(PORT, console.log(`app is listening on port ${PORT}...`));
+    await connectDB(CONFIG.MONGO_URL);
+    app.listen(CONFIG.PORT, console.log(`app is listening on port ${CONFIG.PORT}...`));
   } catch (error) {
     console.log("Failed to connect to database", error);
   }

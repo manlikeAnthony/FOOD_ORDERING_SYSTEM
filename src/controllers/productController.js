@@ -1,22 +1,31 @@
-const Vendor = require("../models/Vendor");
-const Product = require("../models/Product");
 const User = require("../models/User");
 const CustomError = require("../errors");
+const Vendor = require("../models/Vendor");
+const Product = require("../models/Product");
+const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
+const {productValidator} = require('../validator/validate')
 const checkPermissions = require("../utils/checkPermissions");
+
 
 const createProduct = async (req, res) => {
   try {
+    const {error , value} = productValidator(req.body)
+      if (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: error.details.map((d) => d.message),
+        });
+      }
+
     const vendor = await Vendor.findOne({ user: req.user.userId });
     if (!vendor) {
       throw new CustomError.NotFoundError("Vendor profile not found");
     }
 
-    req.body.vendor = vendor._id;
-    const product = await Product.create(req.body);
-    res.status(StatusCodes.CREATED).json({ product });
+    const product = await Product.create({ ...value, vendor: vendor._id });
+    res.status(StatusCodes.CREATED).json(response({ data: product }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -26,9 +35,9 @@ const getAllProducts = async (req, res) => {
       path: "vendor",
       select: "name description",
     });
-    res.status(StatusCodes.OK).json({ count: products.length, products });
+    res.status(StatusCodes.OK).json(response({ data : {count: products.length, products} }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response ({ msg: error.message }));
   }
 };
 
@@ -39,9 +48,9 @@ const getVendorProducts = async (req, res) => {
       path: "reviews",
       select: "rating title",
     });
-    res.status(StatusCodes.OK).json({ count: products.length, products });
+    res.status(StatusCodes.OK).json(response({ data : {count: products.length, products} }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -59,9 +68,9 @@ const getSingleProduct = async (req, res) => {
       throw new CustomError.NotFoundError("Product not found");
     }
 
-    res.status(StatusCodes.OK).json({ product });
+    res.status(StatusCodes.OK).json(response({ data : product }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -89,9 +98,9 @@ const updateProduct = async (req, res) => {
       }
     );
 
-    res.status(StatusCodes.OK).json({ updatedProduct });
+    res.status(StatusCodes.OK).json(response({ data : updatedProduct }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -111,9 +120,9 @@ const deleteProduct = async (req, res) => {
     checkPermissions(req.user, vendor.user);
 
     await product.deleteOne();
-    res.status(StatusCodes.OK).json({ msg: "Product deleted successfully" });
+    res.status(StatusCodes.OK).json(response({ msg: "Product deleted successfully" }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -134,14 +143,14 @@ const toggleFavorite = async (req, res) => {
       await user.save();
       return res
         .status(StatusCodes.OK)
-        .json({ msg: "Product removed from favorites" });
+        .json(response({ msg: "Product removed from favorites" }));
     }
 
     user.favorites.push(productId);
     await user.save();
-    res.status(StatusCodes.OK).json({ msg: "Product added to favorites" });
+    res.status(StatusCodes.OK).json(response({ msg: "Product added to favorites" }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 

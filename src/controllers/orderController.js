@@ -1,12 +1,12 @@
-const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
-const CustomError = require("../errors");
-
-const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 const Cart = require("../models/Cart");
+const CustomError = require("../errors");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const response = require("../responses/response");
 const { checkPermissions } = require("../utils");
+const { StatusCodes } = require("http-status-codes");
+const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
 const createOrder = async (req, res, next) => {
   try {
@@ -69,12 +69,14 @@ const createOrder = async (req, res, next) => {
     order.stripeSessionId = session.id;
     await order.save();
 
-    res.status(StatusCodes.CREATED).json({
-      msg: "Order created",
-      checkoutUrl: session.url,
-    });
+    res.status(StatusCodes.CREATED).json(
+      response({
+        msg: "Order created",
+        data: { checkoutUrl: session.url },
+      })
+    );
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -107,25 +109,29 @@ const webhook = async (req, res, next) => {
     }
     res.json({ received: true });
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({}).populate("user", "name email");
-    res.status(StatusCodes.OK).json({ count: orders.length, orders });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ data: { count: orders.length, orders } }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
 const getAllMyOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({ user: req.user.userId });
-    res.status(StatusCodes.OK).json({ count: orders.length, orders });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ data: { count: orders.length, orders } }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -138,9 +144,9 @@ const getSingleOrder = async (req, res, next) => {
     if (!order) throw new CustomError.NotFoundError("Order not found");
 
     checkPermissions(req.user, order.user);
-    res.status(StatusCodes.OK).json({ order });
+    res.status(StatusCodes.OK).json(response({ data: order }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -153,9 +159,11 @@ const updateOrderStatus = async (req, res, next) => {
     order.status = req.body.status || order.status;
     await order.save();
 
-    res.status(StatusCodes.OK).json({ msg: "Order status updated", order });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ msg: "Order status updated", data: order }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -172,12 +180,11 @@ const cancelOrder = async (req, res, next) => {
     }
 
     await order.remove();
-    res.status(StatusCodes.OK).json({ msg: "Order canceled" });
+    res.status(StatusCodes.OK).json(response({ msg: "Order canceled" }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
-
 
 module.exports = {
   createOrder,
@@ -186,5 +193,5 @@ module.exports = {
   getAllMyOrders,
   getSingleOrder,
   updateOrderStatus,
-  cancelOrder
+  cancelOrder,
 };

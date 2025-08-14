@@ -1,24 +1,27 @@
-const Review = require('../models/Review');
-const Product = require('../models/Product')
-const CustomError = require('../errors')
-const {StatusCodes}=require('http-status-codes')
-const {checkPermissions} = require('../utils')
-
+const CustomError = require("../errors");
+const Review = require("../models/Review");
+const Product = require("../models/Product");
+const { checkPermissions } = require("../utils");
+const { StatusCodes } = require("http-status-codes");
+const { reviewValidator } = require("../validator/validate");
 
 const createReview = async (req, res) => {
   try {
-    const { product: productId, rating, title, comment } = req.body;
-    if (!rating || !title || !comment) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Please provide rating, title, and comment for the review" });
+    const { error, value } = reviewValidator(req.body);
+    if (error) {
+      return res.status(StatusCodes.BAD_REQUEST).json(
+        response({
+          msg: error.details.map((d) => d.message),
+        })
+      );
     }
+    const { product: productId, rating, title, comment } = value;
 
     const isValidProduct = await Product.findOne({ _id: productId });
     if (!isValidProduct) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: `No product with id ${productId}` });
+      throw new CustomError.NotFoundError(
+        `no product with id ${productId} found`
+      );
     }
 
     const alreadySubmitted = await Review.findOne({
@@ -28,16 +31,16 @@ const createReview = async (req, res) => {
     if (alreadySubmitted) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Already submitted a review for this product" });
+        .json(response({ msg: "Already submitted a review for this product" }));
     }
 
     req.body.user = req.user.userId;
-    const review = await Review.create(req.body);
+    const review = await Review.create(value);
     await review.save();
 
-    res.status(StatusCodes.CREATED).json({ review });
+    res.status(StatusCodes.CREATED).json(response({ data: review }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -47,9 +50,9 @@ const getAllReviews = async (req, res) => {
       .populate({ path: "product", select: "vendor name price" })
       .populate({ path: "user", select: "name email" });
 
-    res.status(StatusCodes.OK).json({ review });
+    res.status(StatusCodes.OK).json(response({ data: review }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -61,14 +64,14 @@ const getSingleReview = async (req, res) => {
       .populate({ path: "product", select: "name company price" });
 
     if (!review) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: `No review with id ${reviewId}` });
+      throw new CustomError.NotFoundError(
+        `No review with id ${reviewId} found`
+      );
     }
 
-    res.status(StatusCodes.OK).json({ review });
+    res.status(StatusCodes.OK).json(response({ data: review }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -81,9 +84,9 @@ const updateReview = async (req, res) => {
 
     const review = await Review.findOne({ _id: reviewId });
     if (!review) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: `No review with id ${reviewId}` });
+      throw new CustomError.NotFoundError(
+        `No review with id ${reviewId} found`
+      );
     }
 
     checkPermissions(req.user, review.user);
@@ -94,9 +97,9 @@ const updateReview = async (req, res) => {
 
     await review.save();
 
-    res.status(StatusCodes.OK).json({ review });
+    res.status(StatusCodes.OK).json(response({ data: review }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -105,17 +108,19 @@ const deleteReview = async (req, res) => {
     const { id: reviewId } = req.params;
     const review = await Review.findOne({ _id: reviewId });
     if (!review) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: `No review with id ${reviewId}` });
+      throw new CustomError.NotFoundError(
+        `No review with id ${reviewId} found`
+      );
     }
 
     checkPermissions(req.user, review.user);
     await review.deleteOne();
 
-    res.status(StatusCodes.OK).json({ msg: "Review successfully deleted" });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ msg: "Review successfully deleted" }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -126,16 +131,18 @@ const getSingleProductReviews = async (req, res) => {
       .populate({ path: "user", select: "name email" })
       .populate({ path: "product", select: "name company price" });
 
-    res.status(StatusCodes.OK).json({ reviews, count: reviews.length });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ data: { reviews, count: reviews.length } }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 module.exports = {
-    createReview,
-    getAllReviews,
-    getSingleReview,
-    updateReview,
-    deleteReview,
-    getSingleProductReviews
-}
+  createReview,
+  getAllReviews,
+  getSingleReview,
+  updateReview,
+  deleteReview,
+  getSingleProductReviews,
+};

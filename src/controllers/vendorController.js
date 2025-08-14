@@ -1,18 +1,28 @@
 const User = require("../models/User");
-const Vendor = require("../models/Vendor");
 const CustomError = require("../errors");
+const Vendor = require("../models/Vendor");
 const { checkPermissions } = require("../utils");
+const response = require("../responses/response");
+const { vendorValidator } = require("../validator/validate");
 
 const applyAsVendor = async (req, res) => {
   try {
+    const { error, value } = vendorValidator(req.body);
+    if (error) {
+      return res.status(StatusCodes.BAD_REQUEST).json(
+        response({
+          msg: error.details.map((d) => d.message),
+        })
+      );
+    }
+    const { name, email, phone, address, description } = value;
+
     const existing = await Vendor.findOne({ user: req.user.userId });
     if (existing) {
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: "You already applied or are a vendor" });
     }
-
-    const { name, email, phone, address, description } = req.body;
 
     const vendor = await Vendor.create({
       user: req.user.userId,
@@ -29,9 +39,11 @@ const applyAsVendor = async (req, res) => {
 
     res
       .status(StatusCodes.CREATED)
-      .json({ msg: "Vendor application submitted", vendor });
+      .json(response({ msg: "Vendor application submitted", data: vendor }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(response({ msg: error.message }));
   }
 };
 
@@ -43,14 +55,12 @@ const getMyVendorProfile = async (req, res) => {
     });
 
     if (!vendor) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "No vendor profile found" });
+      throw new CustomError.NotFoundError(`Vendor not found`);
     }
 
-    res.status(StatusCodes.OK).json({ vendor });
+    res.status(StatusCodes.OK).json(response({ data: vendor }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -58,9 +68,7 @@ const updateVendorProfile = async (req, res) => {
   try {
     const vendor = await Vendor.findOne({ user: req.user.userId });
     if (!vendor) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "No vendor profile found" });
+      throw new CustomError.NotFoundError(`Vendor not found`);
     }
 
     checkPermissions(req.user, vendor.user);
@@ -76,9 +84,9 @@ const updateVendorProfile = async (req, res) => {
 
     res
       .status(StatusCodes.OK)
-      .json({ msg: "Vendor profile updated", updatedVendor });
+      .json(response({ msg: "Vendor profile updated", data: updatedVendor }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 module.exports = { applyAsVendor, getMyVendorProfile, updateVendorProfile };

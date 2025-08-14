@@ -1,24 +1,29 @@
 const Cart = require("../models/Cart");
-const Product = require("../models/Product");
-const { StatusCodes } = require("http-status-codes");
 const CustomError = require("../errors");
+const Product = require("../models/Product");
+const response = require("../responses/response");
+const { StatusCodes } = require("http-status-codes");
+const { addToCartValidator } = require("../validator/validate");
 
 // Add item or update quantity
 const addToCart = async (req, res) => {
-  const { productId, quantity } = req.body;
-  const userId = req.user.userId;
-  try {
-    if (!productId || !quantity) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Product ID and quantity required" });
-    }
+  const { error, value } = addToCartValidator(req.body);
 
-    const product = await Product.findOne({product : productId});
+  if (error) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      msg: error.details.map((d) => d.message),
+    });
+  }
+
+  const { productId, quantity } = value;
+  const userId = req.user.userId;
+
+  try {
+    const product = await Product.findById(productId);
     if (!product) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Product not found" });
+      throw CustomError.NotFoundError(
+        `Product with id ${productId} not found `
+      );
     }
 
     let cart = await Cart.findOne({ user: userId });
@@ -42,9 +47,21 @@ const addToCart = async (req, res) => {
       await cart.save();
     }
 
-    res.status(StatusCodes.OK).json({ cart });
+    return res.status(StatusCodes.OK).json(
+      response({
+        msg: "cart updated successfully",
+        data: cart,
+        status: StatusCodes.OK,
+      })
+    );
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
+      response({
+        msg: error.message,
+        data: null,
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+      })
+    );
   }
 };
 
@@ -56,14 +73,18 @@ const getCart = async (req, res) => {
     );
 
     if (!cart) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Cart not found" });
+      throw CustomError.NotFoundError(`Cart not found`);
     }
 
-    res.status(StatusCodes.OK).json({ count: cart.items.length, cart });
+    res.status(StatusCodes.OK).json(
+      response({
+        msg: "cart retrieved sucessfully",
+        data: { count: cart.items.length, cart },
+        status: StatusCodes.OK,
+      })
+    );
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
@@ -76,9 +97,7 @@ const removeFromCart = async (req, res) => {
     );
 
     if (!cart) {
-      return res
-        .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Cart not found" });
+      throw CustomError.NotFoundError(`Cart not found`);
     }
 
     const initialLength = cart.items.length;
@@ -89,23 +108,25 @@ const removeFromCart = async (req, res) => {
     if (cart.items.length === initialLength) {
       return res
         .status(StatusCodes.BAD_REQUEST)
-        .json({ msg: "Product not found in cart" });
+        .json(response({ msg: "Product not found in cart" }));
     }
 
     await cart.save();
 
-    res.status(StatusCodes.OK).json({ msg: "Item removed", cart });
+    res
+      .status(StatusCodes.OK)
+      .json(response({ msg: "Item removed", data: cart }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 
 const clearCart = async (req, res) => {
   try {
     await Cart.findOneAndDelete({ user: req.user.userId });
-    res.status(StatusCodes.OK).json({ msg: "Cart cleared" });
+    res.status(StatusCodes.OK).json(response({ msg: "Cart cleared" }));
   } catch (error) {
-    res.status(StatusCodes.BAD_REQUEST).json({ msg: error.message });
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }
 };
 

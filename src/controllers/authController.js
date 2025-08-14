@@ -11,14 +11,16 @@ const {
 } = require("../utils");
 const Token = require("../models/Token");
 const { StatusCodes } = require("http-status-codes");
-const {registerValidator,loginValidator} = require('../validator/validate')
+const { registerValidator, loginValidator } = require("../validator/validate");
 
 const register = async (req, res) => {
-  const { email, password, name } = req.body; 
-  const {error,value} = registerValidator(req.body);
-  if(error){
+  const { email, password, name } = req.body;
+  const { error, value } = registerValidator(req.body);
+  if (error) {
     console.log(error);
-    res.status(StatusCodes.BAD_REQUEST).json({msg : error.details.map((details)=> details.message)})
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: error.details.map((details) => details.message) });
   }
 
   const alreadyHasAccount = await User.findOne({ email });
@@ -67,21 +69,27 @@ const verifyEmail = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ msg: "Email successfully Verified" });
 };
+
 const login = async (req, res) => {
-  const {email , password} = req.body;
-  const {error,value} = loginValidator(req.body);
-  if(error){
+  const { email, password } = req.body;
+  const { error, value } = loginValidator(req.body);
+  if (error) {
     console.log(error);
-    res.status(StatusCodes.BAD_REQUEST).json({msg : error.details.map((details)=> details.message)})
+    res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ msg: error.details.map((details) => details.message) });
   }
+
   const user = await User.findOne({ email });
   if (!user) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
+  
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
+  
   if (!user.isVerified) {
     throw new CustomError.UnauthenticatedError("Account not verified");
   }
@@ -89,6 +97,7 @@ const login = async (req, res) => {
   const tokenUser = createTokenUser(user);
 
   let refreshToken = "";
+  
   const existingToken = await Token.findOne({ user: user._id });
   if (existingToken) {
     const { isValid } = existingToken;
@@ -97,7 +106,7 @@ const login = async (req, res) => {
     }
     refreshToken = existingToken.refreshToken;
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-    res.status(StatusCodes.OK).json({ tokenUser});
+    res.status(StatusCodes.OK).json({ tokenUser });
     return;
   }
   refreshToken = crypto.randomBytes(40).toString("hex");
@@ -107,7 +116,7 @@ const login = async (req, res) => {
   await Token.create(userToken);
 
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-  res.status(StatusCodes.OK).json({ user: tokenUser});
+  res.status(StatusCodes.OK).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {
