@@ -18,14 +18,14 @@ const loginValidatorSchema = Joi.object({
 const addToCartSchema = Joi.object({
   productId: Joi.string().required(),
   quantity: Joi.number().integer().min(1).required()
-});
+}).unknown(true)
 
 const reviewValidatorSchema = Joi.object({
   product : Joi.string().required(),
   rating : Joi.number().min(1).max(5).required(),
   title : Joi.string().min(3).required(),
   comment : Joi.string().min(3).required()
-})
+}).unknown(true)
 
 const vendorValidatorSchema = Joi.object({
   name : Joi.string().max(50).min(3).required(),
@@ -33,7 +33,7 @@ const vendorValidatorSchema = Joi.object({
   phone: Joi.string().pattern(/^\+?\d{10,15}$/).required(),
   address: Joi.string().min(5).max(255).required(),
   description: Joi.string().allow('').optional()
-})
+}).unknown(true)
 
 const productValidatorSchema = Joi.object({
   name: Joi.string().trim().required(),
@@ -42,9 +42,9 @@ const productValidatorSchema = Joi.object({
   category: Joi.string()
     .valid("main", "side", "drink", "dessert", "snack")
     .required()
-});
+}).unknown(true);
 
-exports.addToCartValidtor = validator(addToCartSchema);
+exports.addToCartValidator = validator(addToCartSchema);
 exports.loginValidator = validator(loginValidatorSchema);
 exports.reviewValidator = validator(reviewValidatorSchema);
 exports.vendorValidator = validator(vendorValidatorSchema);

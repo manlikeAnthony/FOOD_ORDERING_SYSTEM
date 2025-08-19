@@ -1,10 +1,36 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { authenticateUser,authorizeRoles } = require('../middleware/authentication');
-const { applyAsVendor, getMyVendorProfile , updateVendorProfile } = require('../controllers/vendorController');
+const {
+  authenticateUser,
+  authorizeRoles,
+} = require("../middleware/authentication");
+const {
+  applyAsVendor,
+  approveVendor,
+  updateLogo,
+  getMyVendorProfile,
+  updateVendorProfile,
+} = require("../controllers/vendorController");
+const upload = require('../middleware/uploadMiddleware')
 
-router.post('/apply', authenticateUser, applyAsVendor);
-router.get('/me', authenticateUser, getMyVendorProfile);
-router.patch('/me', authenticateUser, authorizeRoles('vendor'), updateVendorProfile);
+router.post("/apply", authenticateUser,upload.single('logo'), applyAsVendor);
+
+router.get("/me", authenticateUser, getMyVendorProfile);
+
+router.patch(
+  "/me",
+  authenticateUser,
+  authorizeRoles("vendor", "admin"),
+  updateVendorProfile
+);
+
+router.patch('/update-logo' , authenticateUser, upload.single('logo') , updateLogo)
+
+router.patch(
+  "/approve/:id",
+  authenticateUser,
+  authorizeRoles("admin"),
+  approveVendor
+);
 
 module.exports = router;

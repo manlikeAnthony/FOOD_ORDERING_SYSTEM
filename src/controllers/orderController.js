@@ -3,8 +3,8 @@ const Cart = require("../models/Cart");
 const CustomError = require("../errors");
 const Order = require("../models/Order");
 const Product = require("../models/Product");
-const response = require("../responses/response");
 const { checkPermissions } = require("../utils");
+const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
 const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 
@@ -16,6 +16,7 @@ const createOrder = async (req, res, next) => {
       "items.product",
       "name price"
     );
+    
     if (!cart || cart.items.length === 0) {
       throw new CustomError.BadRequestError("Your cart is empty");
     }
@@ -80,6 +81,8 @@ const createOrder = async (req, res, next) => {
   }
 };
 
+//stripe listen --forward-to localhost:5000/api/v1/order/webhook
+
 const webhook = async (req, res, next) => {
   try {
     const sig = req.headers["stripe-signature"];
@@ -99,6 +102,7 @@ const webhook = async (req, res, next) => {
 
     if (event.type === "checkout.session.completed") {
       const session = event.data.object;
+
       const { orderId, userId } = session.metadata;
 
       if (orderId) {
@@ -107,6 +111,7 @@ const webhook = async (req, res, next) => {
         console.log(`Order ${orderId} marked as paid`);
       }
     }
+
     res.json({ received: true });
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
@@ -116,6 +121,7 @@ const webhook = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({}).populate("user", "name email");
+
     res
       .status(StatusCodes.OK)
       .json(response({ data: { count: orders.length, orders } }));
@@ -138,9 +144,11 @@ const getAllMyOrders = async (req, res, next) => {
 const getSingleOrder = async (req, res, next) => {
   try {
     const { id: orderId } = req.params;
+    
     const order = await Order.findOne({ _id: orderId }).populate(
       "orderItems.product"
     );
+    
     if (!order) throw new CustomError.NotFoundError("Order not found");
 
     checkPermissions(req.user, order.user);
@@ -154,6 +162,7 @@ const updateOrderStatus = async (req, res, next) => {
   try {
     const { id: orderId } = req.params;
     const order = await Order.findOne({ _id: orderId });
+    
     if (!order) throw new CustomError.NotFoundError("Order not found");
 
     order.status = req.body.status || order.status;
@@ -171,6 +180,7 @@ const cancelOrder = async (req, res, next) => {
   try {
     const { id: orderId } = req.params;
     const order = await Order.findOne({ _id: orderId });
+    
     if (!order) throw new CustomError.NotFoundError("Order not found");
 
     checkPermissions(req.user, order.user);

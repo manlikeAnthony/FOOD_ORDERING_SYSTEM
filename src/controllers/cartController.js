@@ -20,6 +20,7 @@ const addToCart = async (req, res) => {
 
   try {
     const product = await Product.findById(productId);
+    
     if (!product) {
       throw CustomError.NotFoundError(
         `Product with id ${productId} not found `
@@ -58,7 +59,6 @@ const addToCart = async (req, res) => {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
       response({
         msg: error.message,
-        data: null,
         status: StatusCodes.INTERNAL_SERVER_ERROR,
       })
     );

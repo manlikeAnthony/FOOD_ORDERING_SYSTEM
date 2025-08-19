@@ -106,6 +106,7 @@ const updateReview = async (req, res) => {
 const deleteReview = async (req, res) => {
   try {
     const { id: reviewId } = req.params;
+    
     const review = await Review.findOne({ _id: reviewId });
     if (!review) {
       throw new CustomError.NotFoundError(
@@ -127,6 +128,7 @@ const deleteReview = async (req, res) => {
 const getSingleProductReviews = async (req, res) => {
   try {
     const { id: productId } = req.params;
+    
     const reviews = await Review.find({ product: productId })
       .populate({ path: "user", select: "name email" })
       .populate({ path: "product", select: "name company price" });

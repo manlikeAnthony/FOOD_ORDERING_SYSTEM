@@ -8,19 +8,27 @@ const {
   updateProduct,
   deleteProduct,
   toggleFavorite,
+  updateProductImage,
 } = require("../controllers/productController");
 const {
   authenticateUser,
   authorizeRoles,
 } = require("../middleware/authentication");
 const { getSingleProductReviews } = require("../controllers/reviewController");
+const upload = require("../middleware/uploadMiddleware");
 
 router
   .route("/")
-  .post([authenticateUser, authorizeRoles("vendor")], createProduct)
-  .get(authenticateUser, getAllProducts);
+  .post(
+    [authenticateUser, authorizeRoles("vendor"), upload.single("image")],
+    createProduct
+  );
 
 router.route("/vendor/:id").get(authenticateUser, getVendorProducts);
+
+router
+  .route("/update-image/:id")
+  .patch(authenticateUser, upload.single("image"), updateProductImage);
 
 router.route("/:id/favorite").post(authenticateUser, toggleFavorite);
 

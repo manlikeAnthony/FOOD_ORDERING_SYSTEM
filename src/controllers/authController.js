@@ -59,6 +59,9 @@ const verifyEmail = async (req, res) => {
   if (!user) {
     throw new CustomError.UnauthenticatedError("verification failed");
   }
+  if (user.isVerified) {
+    throw new CustomError.BadRequestError("you are already verified");
+  }
   if (user.verificationToken !== verificationToken) {
     throw new CustomError.UnauthenticatedError("verification failed");
   }
@@ -84,12 +87,12 @@ const login = async (req, res) => {
   if (!user) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
-  
+
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
-  
+
   if (!user.isVerified) {
     throw new CustomError.UnauthenticatedError("Account not verified");
   }
@@ -97,7 +100,7 @@ const login = async (req, res) => {
   const tokenUser = createTokenUser(user);
 
   let refreshToken = "";
-  
+
   const existingToken = await Token.findOne({ user: user._id });
   if (existingToken) {
     const { isValid } = existingToken;
