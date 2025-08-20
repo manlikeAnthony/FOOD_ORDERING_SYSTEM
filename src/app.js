@@ -13,7 +13,7 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
-
+const path = require('path');
 // database
 const connectDB = require("./database/connect");
 
@@ -54,6 +54,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(CONFIG.JWT_CREDENTIAL.secret));
 
 app.use(morgan("dev"));
+
+
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("/docs", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "food-ordering-api-docs.html"));
+});
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/vendor", vendorRouter);
