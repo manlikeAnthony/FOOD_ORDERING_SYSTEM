@@ -7,13 +7,16 @@ const {
 const {
   applyAsVendor,
   approveVendor,
+  getAllVendors,
   updateLogo,
   getMyVendorProfile,
   updateVendorProfile,
 } = require("../controllers/vendorController");
-const upload = require('../middleware/uploadMiddleware')
+const upload = require("../middleware/uploadMiddleware");
 
-router.post("/apply", authenticateUser,upload.single('logo'), applyAsVendor);
+router.get("/", authenticateUser, authorizeRoles("admin"), getAllVendors);
+
+router.post("/apply", authenticateUser, upload.single("logo"), applyAsVendor);
 
 router.get("/me", authenticateUser, getMyVendorProfile);
 
@@ -24,7 +27,12 @@ router.patch(
   updateVendorProfile
 );
 
-router.patch('/update-logo' , authenticateUser, upload.single('logo') , updateLogo)
+router.patch(
+  "/update-logo",
+  authenticateUser,
+  upload.single("logo"),
+  updateLogo
+);
 
 router.patch(
   "/approve/:id",

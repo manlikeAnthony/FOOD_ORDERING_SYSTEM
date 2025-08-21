@@ -23,7 +23,7 @@ const applyAsVendor = async (req, res) => {
     const { name, email, phone, address, description } = value;
 
     const existing = await Vendor.findOne({ user: req.user.userId });
-    
+
     if (existing) {
       return res
         .status(StatusCodes.BAD_REQUEST)
@@ -55,7 +55,7 @@ const applyAsVendor = async (req, res) => {
       phone,
       address,
       description,
-      logo : logoUrl
+      logo: logoUrl,
     });
 
     const user = await User.findById(req.user.userId);
@@ -76,7 +76,7 @@ const approveVendor = async (req, res) => {
     const { id: vendorId } = req.params;
 
     const vendor = await Vendor.findById(vendorId);
-    
+
     if (!vendor) {
       throw new CustomError.NotFoundError("Vendor not found");
     }
@@ -96,13 +96,28 @@ const approveVendor = async (req, res) => {
   }
 };
 
+const getAllVendors = async (req, res) => {
+  try {
+    const vendors = await User.find({ role: "vendor" }).select("-password");
+
+    res
+      .status(StatusCodes.OK)
+      .json(response({ msg: "All vendors fetched", data: vendors }));
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(response({ msg: error.message }));
+  }
+};
+
 const getMyVendorProfile = async (req, res) => {
   try {
-    
-    const vendor = await Vendor.findOne({ user: req.user.userId }).populate({
-      path: "products",
-      select: "name description price category image",
-    }).populate({path : 'user' , select : 'name email'});
+    const vendor = await Vendor.findOne({ user: req.user.userId })
+      .populate({
+        path: "products",
+        select: "name description price category image",
+      })
+      .populate({ path: "user", select: "name email" });
 
     if (!vendor) {
       throw new CustomError.NotFoundError(`Vendor not found`);
@@ -143,11 +158,10 @@ const updateVendorProfile = async (req, res) => {
 
 const updateLogo = async (req, res) => {
   try {
-    
     if (!req.file) {
       return res.status(400).json(response({ msg: "No file uploaded" }));
     }
-   // resize the image
+    // resize the image
     // const buffer = await sharp(req.file.buffer)
     //   .resize({ height: 1920, width: 1080, fit: "contain" })
     //   .toBuffer();
@@ -186,6 +200,7 @@ const updateLogo = async (req, res) => {
 module.exports = {
   applyAsVendor,
   approveVendor,
+  getAllVendors,
   updateLogo,
   getMyVendorProfile,
   updateVendorProfile,
