@@ -59,6 +59,10 @@ app.use(morgan("dev"));
 
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "food-ordering-api-docs.html"));
+});
+
 app.get("/docs", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "food-ordering-api-docs.html"));
 });
