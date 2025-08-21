@@ -8,7 +8,7 @@ const {
   getSingleOrder,
   updateOrderStatus,
   cancelOrder,
-} = require("../controllers/OrderController");
+} = require("../controllers/orderController");
 const {
   authenticateUser,
   authorizeRoles,
