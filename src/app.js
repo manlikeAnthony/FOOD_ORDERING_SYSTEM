@@ -56,15 +56,16 @@ app.use(cookieParser(CONFIG.JWT_CREDENTIAL.secret));
 
 app.use(morgan("dev"));
 
+app.use(express.static('./public'))
 
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "food-ordering-api-docs2.html"));
+  res.sendFile(path.join(__dirname, "public", "food-ordering-docs.html"));
 });
 
 app.get("/docs", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "food-ordering-api-docs2.html"));
+  res.sendFile(path.join(__dirname, "public", "food-ordering-docs.html"));
 });
 
 app.use("/api/v1/auth", authRouter);
