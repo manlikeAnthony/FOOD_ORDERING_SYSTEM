@@ -6,8 +6,13 @@ const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
 const { vendorValidator } = require("../validator/validate");
 const s3 = require("../AWS/s3");
-const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const {
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} = require("@aws-sdk/client-s3");
 const CONFIG = require("../config/index");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 const applyAsVendor = async (req, res) => {
   try {
@@ -30,8 +35,6 @@ const applyAsVendor = async (req, res) => {
         .json({ msg: "You already applied or are a vendor" });
     }
 
-    let logoUrl = null;
-
     if (req.file) {
       const fileName = `vendors/${req.user.userId}/${Date.now()}-${
         req.file.originalname
@@ -44,8 +47,6 @@ const applyAsVendor = async (req, res) => {
         ContentType: req.file.mimetype,
       };
       await s3.send(new PutObjectCommand(params));
-
-      logoUrl = `https://${CONFIG.AWS.BUCKET_NAME}.s3.${CONFIG.AWS.BUCKET_REGION}.amazonaws.com/${fileName}`;
     }
 
     const vendor = await Vendor.create({
@@ -55,7 +56,7 @@ const applyAsVendor = async (req, res) => {
       phone,
       address,
       description,
-      logo: logoUrl,
+      logo: fileName,
     });
 
     const user = await User.findById(req.user.userId);
@@ -71,6 +72,7 @@ const applyAsVendor = async (req, res) => {
       .json(response({ msg: error.message }));
   }
 };
+
 const approveVendor = async (req, res) => {
   try {
     const { id: vendorId } = req.params;
@@ -98,7 +100,21 @@ const approveVendor = async (req, res) => {
 
 const getAllVendors = async (req, res) => {
   try {
-    const vendors = await User.find({ role: "vendor" }).select("-password");
+    const vendors = await Vendor.find({})
+      .populate({ path: "user", select: "name email" })
+      .lean();
+
+    for (const vendor of vendors) {
+      if (vendor.logo) {
+        const getObjectParams = {
+          Bucket: CONFIG.AWS.BUCKET_NAME,
+          Key: vendor.logo,
+        };
+        const command = new GetObjectCommand(getObjectParams);
+        const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        vendor.logo = url;
+      }
+    }
 
     res
       .status(StatusCodes.OK)
@@ -123,6 +139,15 @@ const getMyVendorProfile = async (req, res) => {
       throw new CustomError.NotFoundError(`Vendor not found`);
     }
 
+    const getObjectParams = {
+      Bucket: CONFIG.AWS.BUCKET_NAME,
+      Key: vendor.logo,
+    };
+
+    const command = new GetObjectCommand(getObjectParams);
+    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+    vendor.logo = url;
+
     res.status(StatusCodes.OK).json(response({ data: vendor }));
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
@@ -138,10 +163,36 @@ const updateVendorProfile = async (req, res) => {
     }
 
     checkPermissions(req.user, vendor.user);
+    let fileName;
+
+    if (req.file) {
+      fileName = `vendors/${req.user.userId}/${Date.now()}-${
+        req.file.originalname
+      }`;
+
+      const params = {
+        Bucket: CONFIG.AWS.BUCKET_NAME,
+        Key: fileName,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      };
+
+      const command = new PutObjectCommand(params);
+
+      await s3.send(command);
+    }
+
+    const updateData = {
+      ...req.body,
+    };
+
+    if (fileName) {
+      updateData.logo = fileName; // only update logo if file was uploaded
+    }
 
     const updatedVendor = await Vendor.findOneAndUpdate(
       { user: req.user.userId },
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true,
@@ -161,10 +212,6 @@ const updateLogo = async (req, res) => {
     if (!req.file) {
       return res.status(400).json(response({ msg: "No file uploaded" }));
     }
-    // resize the image
-    // const buffer = await sharp(req.file.buffer)
-    //   .resize({ height: 1920, width: 1080, fit: "contain" })
-    //   .toBuffer();
 
     const fileName = `vendors/${req.user.userId}/${Date.now()}-${
       req.file.originalname
@@ -181,17 +228,54 @@ const updateLogo = async (req, res) => {
 
     await s3.send(command);
 
-    const logoUrl = `https://${CONFIG.AWS.BUCKET_NAME}.s3.${CONFIG.AWS.BUCKET_REGION}.amazonaws.com/${fileName}`;
-
     const vendor = await Vendor.findOneAndUpdate(
       { user: req.user.userId },
-      { logo: logoUrl },
+      { logo: fileName },
       { new: true, runValidators: true }
     );
 
     res
       .status(StatusCodes.OK)
       .json(response({ msg: "image updated successfully", data: vendor }));
+  } catch (error) {
+    res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
+  }
+};
+
+const deleteVendor = async (req, res) => {
+  try {
+    const { id: vendorId } = req.params;
+
+    const vendor = await Vendor.findById(vendorId);
+
+    if (!vendor) {
+      throw new CustomError.NotFoundError(
+        `no vendor with id ${vendorId} found`
+      );
+    }
+    checkPermissions(req.user, vendor.user);
+
+    const user = await User.findById(vendor.user);
+
+    if (user) {
+      user.role = "user";
+      await user.save();
+    }
+
+    if (vendor.logo) {
+      const params = {
+        Bucket: CONFIG.AWS.BUCKET_NAME,
+        Key: vendor.logo,
+      };
+
+      const command = new DeleteObjectCommand(params);
+      await s3.send(command);
+    }
+    vendor.deleteOne();
+
+    res
+      .status(StatusCodes.OK)
+      .json(response({ msg: "Vendor Deleted successfully" }));
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const SingleOrderItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -18,11 +18,23 @@ const OrderSchema = new mongoose.Schema(
     shippingFee: { type: Number, required: true },
     subtotal: { type: Number, required: true },
     total: { type: Number, required: true },
-    orderItems: [SingleOrderItemSchema],
+    orderItems: {
+      type: [SingleOrderItemSchema],
+      validate: {
+        validator: function (v) {
+          return v && v.length > 0;
+        },
+        message: "Order must contain at least one item.",
+      },
+    },
     status: {
       type: String,
       enum: ["pending", "paid", "failed"],
       default: "pending",
+    },
+    reference: {
+      type: String,
+      unique: true
     },
     clientSecret: { type: String, required: false },
     paymentIntentId: { type: String },

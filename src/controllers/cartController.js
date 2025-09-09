@@ -73,7 +73,7 @@ const getCart = async (req, res) => {
     );
 
     if (!cart) {
-      throw CustomError.NotFoundError(`Cart not found`);
+      throw new CustomError.NotFoundError(`Cart not found`);
     }
 
     res.status(StatusCodes.OK).json(

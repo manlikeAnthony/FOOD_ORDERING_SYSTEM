@@ -1,14 +1,19 @@
+const s3 = require("../AWS/s3");
 const User = require("../models/User");
 const CustomError = require("../errors");
+const CONFIG = require("../config/index");
 const Vendor = require("../models/Vendor");
 const Product = require("../models/Product");
 const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
 const { productValidator } = require("../validator/validate");
 const checkPermissions = require("../utils/checkPermissions");
-const s3 = require("../AWS/s3");
-const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
-const CONFIG = require("../config/index");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const {
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} = require("@aws-sdk/client-s3");
 
 const createProduct = async (req, res) => {
   try {
@@ -29,28 +34,30 @@ const createProduct = async (req, res) => {
       throw new CustomError.UnauthorizedError("You are not approved");
     }
 
-    let imageUrl = null;
+    let imageKeys = [];
 
-    if (req.file) {
-      const fileName = `products/${vendor._id}/${Date.now()}-${
-        req.file.originalname
-      }`;
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const fileName = `products/${vendor._id}/${Date.now()}-${
+          file.originalname
+        }`;
 
-      const params = {
-        Bucket: CONFIG.AWS.BUCKET_NAME,
-        Key: fileName,
-        Body: req.file.buffer,
-        ContentType: req.file.mimetype,
-      };
-      await s3.send(new PutObjectCommand(params));
+        const params = {
+          Bucket: CONFIG.AWS.BUCKET_NAME,
+          Key: fileName,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        };
 
-      imageUrl = `https://${CONFIG.AWS.BUCKET_NAME}.s3.${CONFIG.AWS.BUCKET_REGION}.amazonaws.com/${fileName}`;
+        await s3.send(new PutObjectCommand(params));
+        imageKeys.push(fileName);
+      }
     }
 
     const product = await Product.create({
       ...value,
       vendor: vendor._id,
-      image: imageUrl,
+      image: imageKeys,
     });
 
     res.status(StatusCodes.CREATED).json(response({ data: product }));
@@ -68,6 +75,20 @@ const getAllProducts = async (req, res) => {
       select: "name description",
     });
 
+    for (const product of products) {
+      if (product.image && Array.isArray(product.image)) {
+        const urls = await Promise.all(
+          product.image.map(async (key) => {
+            const command = new GetObjectCommand({
+              Bucket: CONFIG.AWS.BUCKET_NAME,
+              Key: key,
+            });
+            return await getSignedUrl(s3, command, { expiresIn: 3600 });
+          })
+        );
+        product.image = urls;
+      }
+    }
     res
       .status(StatusCodes.OK)
       .json(response({ data: { count: products.length, products } }));
@@ -84,7 +105,21 @@ const getVendorProducts = async (req, res) => {
       path: "reviews",
       select: "rating title",
     });
-
+    for (const product of products) {
+      if (product.image && Array.isArray(product.image)) {
+        const urls = await Promise.all(
+          product.image.map(async (key) => {
+            const params = {
+              Bucket: CONFIG.AWS.BUCKET_NAME,
+              Key: key,
+            };
+            const command = new GetObjectCommand(params);
+            return await getSignedUrl(s3, command, { expiresIn: 3600 });
+          })
+        );
+        product.image = urls;
+      }
+    }
     res
       .status(StatusCodes.OK)
       .json(response({ data: { count: products.length, products } }));
@@ -106,6 +141,19 @@ const getSingleProduct = async (req, res) => {
 
     if (!product) {
       throw new CustomError.NotFoundError("Product not found");
+    }
+
+    if (product.image && Array.isArray(product.image)) {
+      const urls = await Promise.all(
+        product.image.map(async (key) => {
+          const command = new GetObjectCommand({
+            Bucket: CONFIG.AWS.BUCKET_NAME,
+            Key: key,
+          });
+          return await getSignedUrl(s3, command, { expiresIn: 3600 });
+        })
+      );
+      product.image = urls;
     }
 
     res.status(StatusCodes.OK).json(response({ data: product }));
@@ -160,6 +208,19 @@ const deleteProduct = async (req, res) => {
     }
 
     checkPermissions(req.user, vendor.user);
+
+    if (product.image && Array.isArray(product.image)) {
+      await Promise.all(
+        product.image.map((key) => {
+          const params = {
+            Bucket: CONFIG.AWS.BUCKET_NAME,
+            Key: key,
+          };
+          const command = new DeleteObjectCommand(params);
+          return s3.send(command);
+        })
+      );
+    }
 
     await product.deleteOne();
 
@@ -217,11 +278,11 @@ const updateProductImage = async (req, res) => {
     }
 
     const vendor = await Vendor.findOne({ _id: product.vendor });
-    
+
     if (!vendor) {
       throw new CustomError.NotFoundError("Vendor profile not found");
     }
-    
+
     checkPermissions(req.user, vendor.user);
 
     if (!req.file) {
@@ -243,17 +304,17 @@ const updateProductImage = async (req, res) => {
 
     await s3.send(command);
 
-    const imageUrl = `https://${CONFIG.AWS.BUCKET_NAME}.s3.${CONFIG.AWS.BUCKET_REGION}.amazonaws.com/${fileName}`;
-
     const updatedProduct = await Product.findOneAndUpdate(
       { _id: productId },
-      { image: imageUrl },
+      { image: fileName },
       { new: true, runValidators: true }
     );
 
     res
       .status(StatusCodes.OK)
-      .json(response({ msg: "image updated successfully", data: updatedProduct }));
+      .json(
+        response({ msg: "image updated successfully", data: updatedProduct })
+      );
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));
   }

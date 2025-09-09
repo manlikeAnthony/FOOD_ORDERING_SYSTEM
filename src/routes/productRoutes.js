@@ -20,9 +20,9 @@ const upload = require("../middleware/uploadMiddleware");
 router
   .route("/")
   .post(
-    [authenticateUser, authorizeRoles("vendor"), upload.single("image")],
+    [authenticateUser, authorizeRoles("vendor"), upload.array("image" , 5)],
     createProduct
-  );
+  ).get(authenticateUser, authorizeRoles("vendor" , "admin"), getAllProducts);
 
 router.route("/vendor/:id").get(authenticateUser, getVendorProducts);
 

@@ -24,6 +24,7 @@ router.patch(
   "/me",
   authenticateUser,
   authorizeRoles("vendor", "admin"),
+  upload.single('logo'),
   updateVendorProfile
 );
 
