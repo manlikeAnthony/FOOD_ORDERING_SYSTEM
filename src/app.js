@@ -19,7 +19,7 @@ const connectDB = require("./database/connect");
 
 //middleware
 const notFoundMiddleware = require("./middleware/not-found");
-const { webhook } = require("./controllers/OrderController");
+const { webhook } = require("./controllers/orderController");
 const errorHandlerMiddleware = require("./middleware/error-handler");
 
 //routes
