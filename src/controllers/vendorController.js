@@ -50,15 +50,19 @@ const applyAsVendor = async (req, res) => {
       await s3.send(new PutObjectCommand(params));
     }
 
-    const vendor = await Vendor.create({
+    const vendorData = {
       user: req.user.userId,
       name,
       email,
       phone,
       address,
       description,
-      logo: fileName,
-    });
+    };
+
+    if (fileName) vendorData.logo = fileName; 
+
+    const vendor = await Vendor.create(vendorData);
+
 
     const user = await User.findById(req.user.userId);
     user.role = "vendor";
