@@ -34,9 +34,10 @@ const applyAsVendor = async (req, res) => {
         .status(StatusCodes.BAD_REQUEST)
         .json({ msg: "You already applied or are a vendor" });
     }
+    let fileName;
 
     if (req.file) {
-      const fileName = `vendors/${req.user.userId}/${Date.now()}-${
+      fileName = `vendors/${req.user.userId}/${Date.now()}-${
         req.file.originalname
       }`;
 
