@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const geocoder = require("../utils/geocoder");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -26,10 +27,35 @@ const UserSchema = new mongoose.Schema({
       message: "please provide a valid email",
     },
   },
+  geoAddress: {
+    address: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        default: "Point",
+      },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        index: "2dsphere",
+      },
+      formattedAddress: String,
+    },
+  },
   role: {
     type: String,
-    enum: ["admin", "user", "vendor"],
+    enum: ["user", "vendor", "delivery", "admin"],
     default: "user",
+  },
+  status: {
+    //for delivery guys
+    type: String,
+    enum: ["available", "busy" , 'banned'],
+    default: "available",
   },
   favorites: [
     {
@@ -51,17 +77,40 @@ const UserSchema = new mongoose.Schema({
   passwordTokenExpirationDate: {
     type: Date,
   },
+
 });
 
-UserSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+UserSchema.index({ "geoAddress.location": "2dsphere" });
+
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+
+   if (this.geoAddress?.address) {
+    const loc = await geocoder.geocode(this.geoAddress.address);
+
+    if (loc && loc.length > 0) {
+      this.geoAddress.location = {
+        type: "Point",
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+      };
+    } else {
+      // Address not found → remove location entirely
+      this.geoAddress.location = undefined;
+    }
+  } else {
+    // No address provided → remove location entirely
+    this.geoAddress.location = undefined;
+  }
+
+  next();
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
-
 module.exports = mongoose.model("User", UserSchema);

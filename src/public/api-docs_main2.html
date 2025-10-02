@@ -8419,6 +8419,7 @@
                             <li><a class=endpoint_menu href=#jump-User-showcurrentuser>show current user</a>
                             <li><a class=endpoint_menu href=#jump-User-getsingleuser>get single user</a>
                             <li><a class=endpoint_menu href=#jump-User-deleteuser>delete user</a>
+                            <li><a class=endpoint_menu href=#jump-User-updatelocation>update location</a>
                         </ul>
                     <li><strong><a href=#Vendor>Vendor</a></strong>
                         <ul>
@@ -8428,8 +8429,8 @@
                             <li><a class=endpoint_menu href=#jump-Vendor-approvevendor_28admin_29>approve vendor
                                     (admin)</a>
                             <li><a class=endpoint_menu href=#jump-Vendor-updatelogo>update logo</a>
-                            <li><a class=endpoint_menu
-                                    href=#jump-Vendor-https_3A_2F_2Ffoodordering548conrendercom_2Fvendor>https://food-ordering-548c.onrender.com/vendor</a>
+                            <li><a class=endpoint_menu href=#jump-Vendor-getallvendors>get all vendors</a>
+                            <li><a class=endpoint_menu href=#jump-Vendor-deletelogo>delete logo</a>
                         </ul>
                     <li><strong><a href=#Product>Product</a></strong>
                         <ul>
@@ -8467,6 +8468,35 @@
                             <li><a class=endpoint_menu href=#jump-Reviews-updatereview>update review</a>
                             <li><a class=endpoint_menu href=#jump-Reviews-deletereview>delete review</a>
                         </ul>
+                    <li><strong><a href=#Admin>Admin</a></strong>
+                        <ul>
+                            <li><a class=endpoint_menu href=#jump-Admin-getalladmin>get all admin</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-approvevendor>approve vendor</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-getallusers>get all users</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-getalltransactions>get all transactions</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-getalldeliveryguys>get all delivery-guys</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-geteveryone>get everyone</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-makeuseranadmin_28mustbeauser_29>make user an
+                                    admin (must be a user)</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-banuser>ban user</a>
+                            <li><a class=endpoint_menu href=#jump-Admin-liftban>lift ban</a>
+                        </ul>
+                    <li><strong><a href=#Delivery>Delivery</a></strong>
+                        <ul>
+                            <li><a class=endpoint_menu href=#jump-Delivery-applyasdeliveryguy>apply as delivery guy</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-getalldeliveryguys>get all delivery guys</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-toggledeliverystatus>toggle delivery
+                                    status</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-getmycurrentdelivery>get my current
+                                    delivery</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-getavailabledeliveries>get available
+                                    deliveries</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-markorderdelivered>mark order delivered</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-getmydeliveryhistory>get my delivery
+                                    history</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-claimdelivery>claim delivery</a>
+                            <li><a class=endpoint_menu href=#jump-Delivery-canceldelivery>cancel delivery</a>
+                        </ul>
                 </ul>
             </div>
             <div class=col-md-9>
@@ -8489,16 +8519,18 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/register
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/register
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-register class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;name&#34;:&#34;john&#34;,
-                                                &#34;email&#34;:&#34;john@gmail.com&#34;,
-                                                &#34;password&#34;:&#34;secret&#34;
+                                                &#34;name&#34;: &#34;elisha&#34;,
+                                                &#34;email&#34;: &#34;elisha@gmail.com&#34;,
+                                                &#34;password&#34;: &#34;secret&#34;,
+                                                &#34;address&#34;: &#34;5, Adeola Odeku Street, Victoria Island, Lagos,
+                                                Nigeria&#34;
                                                 }</span>
                                             <div class=clearfix></div>
                                         </div>
@@ -8513,14 +8545,14 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/login
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/login
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-login class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;email&#34;:&#34;anthony@gmail.com&#34;,
+                                                &#34;email&#34;:&#34;elisha@gmail.com&#34;,
                                                 &#34;password&#34;:&#34;secret&#34;
                                                 }</span>
                                             <div class=clearfix></div>
@@ -8536,7 +8568,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/logout
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/logout
                                             </h4>
                                         </a>
                                     </div>
@@ -8559,7 +8591,7 @@
                                                     password</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/forgot-password
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/forgot-password
                                             </h4>
                                         </a>
                                     </div>
@@ -8581,7 +8613,7 @@
                                                     password</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/reset-password
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/reset-password
                                             </h4>
                                         </a>
                                     </div>
@@ -8605,16 +8637,16 @@
                                                     email</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/auth/verify-email
+                                                https://food-ordering-548c.onrender.com/api/v1/auth/verify-email
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-verifyemail class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;email&#34;:&#34;john@gmail.com&#34;,
+                                                &#34;email&#34;:&#34;elisha@gmail.com&#34;,
                                                 &#34;verificationToken&#34;:
-                                                &#34;a554590d5bc06d83a9a9d478ddb661371a618f71edca68f8740f1b28e5b6964fd8e3e108bd216287&#34;
+                                                &#34;88f76a6e12a986f8671201f65cc6481229819033f403398c7cc5c0bbd2764c20f98ae6910a3ffabf&#34;
                                                 }</span>
                                             <div class=clearfix></div>
                                         </div>
@@ -8627,7 +8659,7 @@
                 <div class="panel panel-default">
                     <div class=panel-heading>
                         <h3 class=panel-title id=User>User
-                            <span class=badge>5</span>
+                            <span class=badge>6</span>
                         </h3>
                     </div>
                     <div class=panel-body>
@@ -8644,7 +8676,7 @@
                                                     admins</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/user/admins
+                                                https://food-ordering-548c.onrender.com/api/v1/user/admins
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-getalladmins class="panel-collapse collapse">
@@ -8660,7 +8692,7 @@
                                                     users</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/user
+                                                https://food-ordering-548c.onrender.com/api/v1/user
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-Getallusers class="panel-collapse collapse">
@@ -8676,7 +8708,7 @@
                                                     user</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/users/showMe
+                                                https://food-ordering-548c.onrender.com/api/v1/user/showMe
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-showcurrentuser class="panel-collapse collapse">
@@ -8692,7 +8724,7 @@
                                                     user</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/user/689a69fac14d6258a4da80da
+                                                https://food-ordering-548c.onrender.com/api/v1/user/689a69fac14d6258a4da80da
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-getsingleuser class="panel-collapse collapse">
@@ -8708,11 +8740,33 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/user/6898b45997dceb7a3df2275a
+                                                https://food-ordering-548c.onrender.com/api/v1/user/6898b45997dceb7a3df2275a
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-deleteuser class="panel-collapse collapse">
                                         <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-User-updatelocation>
+                                    <div class=panel-heading><small class="pull-right text-muted">raw</small>
+                                        <a class=text-warning data-toggle=collapse data-parent=#accordion-User
+                                            href=#collapse-User-updatelocation>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>update
+                                                    location</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/user/location
+                                            </h4>
+                                        </a>
+                                    </div>
+                                    <div id=collapse-User-updatelocation class="panel-collapse collapse">
+                                        <div class=panel-body>
+                                            <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
+                                                &#34;address&#34;:&#34;Lekki Phase 1, Lagos, Nigeria&#34;
+                                                }</span>
+                                            <div class=clearfix></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -8722,7 +8776,7 @@
                 <div class="panel panel-default">
                     <div class=panel-heading>
                         <h3 class=panel-title id=Vendor>Vendor
-                            <span class=badge>6</span>
+                            <span class=badge>7</span>
                         </h3>
                     </div>
                     <div class=panel-body>
@@ -8738,7 +8792,7 @@
                                                     vendor</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor/apply
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/apply
                                             </h4>
                                         </a>
                                     </div>
@@ -8754,11 +8808,11 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>name
-                                                        <td>John Cooks
+                                                        <td>debo mealz
                                                         <td>
                                                     <tr>
                                                         <td>address
-                                                        <td>12 Market Road, Ikeja, Lagos
+                                                        <td>Bungalow estate, Ikeja, Lagos
                                                         <td>
                                                     <tr>
                                                         <td>description
@@ -8766,7 +8820,7 @@
                                                         <td>
                                                     <tr>
                                                         <td>email
-                                                        <td>john@gmail.com
+                                                        <td>hassan@gmail.com
                                                         <td>
                                                     <tr>
                                                         <td>phone
@@ -8789,7 +8843,7 @@
                                                     Profile</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor/me
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/me
                                             </h4>
                                         </a>
                                     </div>
@@ -8818,7 +8872,7 @@
                                                     Profile</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor/me
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/me
                                             </h4>
                                         </a>
                                     </div>
@@ -8840,7 +8894,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor/approve/689e47d9809b10bd0e975015
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/approve/689e47d9809b10bd0e975015
                                             </h4>
                                         </a>
                                     </div>
@@ -8869,7 +8923,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor/update-logo
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/update-logo
                                             </h4>
                                         </a>
                                     </div>
@@ -8891,22 +8945,20 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel panel-info"
-                                    id=jump-Vendor-https_3A_2F_2Ffoodordering548conrendercom_2Fvendor>
+                                <div class="panel panel-info" id=jump-Vendor-getallvendors>
                                     <div class=panel-heading><small class="pull-right text-muted">raw</small>
                                         <a class=text-info data-toggle=collapse data-parent=#accordion-Vendor
-                                            href=#collapse-Vendor-https_3A_2F_2Ffoodordering548conrendercom_2Fvendor>
+                                            href=#collapse-Vendor-getallvendors>
                                             <h4 class=panel-title><span
-                                                    class="glyphicon glyphicon-plus"></span><strong>https://food-ordering-548c.onrender.com/vendor</strong>
-                                                &nbsp;|&nbsp;
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all
+                                                    vendors</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/vendor
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor
                                             </h4>
                                         </a>
                                     </div>
-                                    <div id=collapse-Vendor-https_3A_2F_2Ffoodordering548conrendercom_2Fvendor
-                                        class="panel-collapse collapse">
+                                    <div id=collapse-Vendor-getallvendors class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
                                                 &#34;name&#34;: &#34;Anthony&#39;s Tech Store&#34;,
@@ -8919,6 +8971,37 @@
                                                 &#34;https://res.cloudinary.com/yourcloud/image/upload/v1234567890/vendor-logo.png&#34;
                                                 }</span>
                                             <div class=clearfix></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-danger" id=jump-Vendor-deletelogo>
+                                    <div class=panel-heading><small class="pull-right text-muted">formdata</small>
+                                        <a class=text-danger data-toggle=collapse data-parent=#accordion-Vendor
+                                            href=#collapse-Vendor-deletelogo>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>delete logo</strong>
+                                                &nbsp;|&nbsp;
+                                                <strong class="request-method border-danger">DELETE</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/vendor/delete-logo
+                                            </h4>
+                                        </a>
+                                    </div>
+                                    <div id=collapse-Vendor-deletelogo class="panel-collapse collapse">
+                                        <div class=panel-body>
+                                            <h5 class="label label-primary">Body</h5>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Key
+                                                        <th>Value
+                                                        <th>Description
+                                                <tbody>
+                                                    <tr>
+                                                        <td>logo
+                                                        <td>
+                                                        <td>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -8945,7 +9028,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product
+                                                https://food-ordering-548c.onrender.com/api/v1/product
                                             </h4>
                                         </a>
                                     </div>
@@ -8961,15 +9044,15 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>name
-                                                        <td>Marvel Cusine
+                                                        <td>beans and bread
                                                         <td>
                                                     <tr>
                                                         <td>description
-                                                        <td>Nobody can rate it badly
+                                                        <td>1 portion
                                                         <td>
                                                     <tr>
                                                         <td>price
-                                                        <td>3000
+                                                        <td>2000
                                                         <td>
                                                     <tr>
                                                         <td>category
@@ -8977,15 +9060,7 @@
                                                         <td>
                                                     <tr>
                                                         <td>ingredients
-                                                        <td>spinach
-                                                        <td>
-                                                    <tr>
-                                                        <td>ingredients
-                                                        <td>cavier
-                                                        <td>
-                                                    <tr>
-                                                        <td>ingredients
-                                                        <td>pepper
+                                                        <td>starch
                                                         <td>
                                                     <tr>
                                                         <td>image
@@ -9004,7 +9079,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product
+                                                https://food-ordering-548c.onrender.com/api/v1/product
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getallproduct class="panel-collapse collapse">
@@ -9020,7 +9095,7 @@
                                                     products</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product/vendor/68928cecc432ea129ae138fd
+                                                https://food-ordering-548c.onrender.com/api/v1/product/vendor/689e47d9809b10bd0e975015
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getvendorproducts class="panel-collapse collapse">
@@ -9036,7 +9111,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product/689673415d51059e628e3cf8
+                                                https://food-ordering-548c.onrender.com/api/v1/product/68ac55a8def9f02cc1a172df
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getsingleproduct class="panel-collapse collapse">
@@ -9052,7 +9127,7 @@
                                                     Product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product/68928fddc432ea129ae13904
+                                                https://food-ordering-548c.onrender.com/api/v1/product/68928fddc432ea129ae13904
                                             </h4>
                                         </a>
                                     </div>
@@ -9074,7 +9149,7 @@
                                                     Product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product/68928fddc432ea129ae13904
+                                                https://food-ordering-548c.onrender.com/api/v1/product/68928fddc432ea129ae13904
                                             </h4>
                                         </a>
                                     </div>
@@ -9096,7 +9171,7 @@
                                                     image</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/product/update-image/68a3a6c628939dd0ad9c386c
+                                                https://food-ordering-548c.onrender.com/api/v1/product/update-image/68a3a6c628939dd0ad9c386c
                                             </h4>
                                         </a>
                                     </div>
@@ -9141,15 +9216,15 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/cart
+                                                https://food-ordering-548c.onrender.com/api/v1/cart
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Cart-AddToCart class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;productId&#34;: &#34;689e5d1a7ded78ce4d73846e&#34;,
-                                                &#34;quantity&#34; : 2
+                                                &#34;productId&#34;: &#34;68dac1217a7ac705f822e7f8&#34;,
+                                                &#34;quantity&#34; : 4
                                                 }</span>
                                             <div class=clearfix></div>
                                         </div>
@@ -9164,7 +9239,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/cart
+                                                https://food-ordering-548c.onrender.com/api/v1/cart
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-getcart class="panel-collapse collapse">
@@ -9180,7 +9255,7 @@
                                                     cart</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/cart/689673305d51059e628e3cf5
+                                                https://food-ordering-548c.onrender.com/api/v1/cart/689673305d51059e628e3cf5
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-removefromcart class="panel-collapse collapse">
@@ -9196,7 +9271,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/cart
+                                                https://food-ordering-548c.onrender.com/api/v1/cart
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-clearcart class="panel-collapse collapse">
@@ -9218,19 +9293,26 @@
                         <div class=request-item>
                             <div class=panel-group id=accordion-Order>
                                 <div class="panel panel-success" id=jump-Order-CreateOrder>
-                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
-                                            class=text-success data-toggle=collapse data-parent=#accordion-Order
+                                    <div class=panel-heading><small class="pull-right text-muted">raw</small>
+                                        <a class=text-success data-toggle=collapse data-parent=#accordion-Order
                                             href=#collapse-Order-CreateOrder>
                                             <h4 class=panel-title><span
                                                     class="glyphicon glyphicon-plus"></span><strong>Create
                                                     Order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order
+                                                https://food-ordering-548c.onrender.com/api/v1/order
                                             </h4>
-                                        </a></div>
+                                        </a>
+                                    </div>
                                     <div id=collapse-Order-CreateOrder class="panel-collapse collapse">
-                                        <div class=panel-body></div>
+                                        <div class=panel-body>
+                                            <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
+                                                &#34;dropOffLocation&#34;:&#34;Plot 1234, Admiralty Way, Lekki Phase 1,
+                                                Lagos, Nigeria&#34;
+                                                }</span>
+                                            <div class=clearfix></div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="panel panel-info" id=jump-Order-GetAllOrders_28admin_29>
@@ -9242,7 +9324,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order
+                                                https://food-ordering-548c.onrender.com/api/v1/order
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-GetAllOrders_28admin_29 class="panel-collapse collapse">
@@ -9258,7 +9340,7 @@
                                                     orders</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order/my-orders
+                                                https://food-ordering-548c.onrender.com/api/v1/order/my-orders
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-getmyorders class="panel-collapse collapse">
@@ -9274,7 +9356,7 @@
                                                     order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-getsingleorder class="panel-collapse collapse">
@@ -9290,7 +9372,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-updateorderstatus_28admin_29 class="panel-collapse collapse">
@@ -9306,7 +9388,7 @@
                                                     order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-cancelorder class="panel-collapse collapse">
@@ -9336,7 +9418,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/reviews
+                                                https://food-ordering-548c.onrender.com/api/v1/reviews
                                             </h4>
                                         </a>
                                     </div>
@@ -9361,7 +9443,7 @@
                                                     reviews</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/reviews
+                                                https://food-ordering-548c.onrender.com/api/v1/reviews
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-getallreviews class="panel-collapse collapse">
@@ -9377,7 +9459,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/reviews/6898c693d8a7f2b2ec1f89ea
+                                                https://food-ordering-548c.onrender.com/api/v1/reviews/6898c693d8a7f2b2ec1f89ea
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-getsinglereview class="panel-collapse collapse">
@@ -9393,7 +9475,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/reviews/6898c693d8a7f2b2ec1f89ea
+                                                https://food-ordering-548c.onrender.com/api/v1/reviews/6898c693d8a7f2b2ec1f89ea
                                             </h4>
                                         </a>
                                     </div>
@@ -9417,7 +9499,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/reviews/123
+                                                https://food-ordering-548c.onrender.com/api/v1/reviews/123
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-deletereview class="panel-collapse collapse">
@@ -9428,16 +9510,338 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class=panel-heading>
+                        <h3 class=panel-title id=Admin>Admin
+                            <span class=badge>9</span>
+                        </h3>
+                    </div>
+                    <div class=panel-body>
+                        <p>
+                        <div class=request-item>
+                            <div class=panel-group id=accordion-Admin>
+                                <div class="panel panel-info" id=jump-Admin-getalladmin>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-getalladmin>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all
+                                                    admin</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-getalladmin class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Admin-approvevendor>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-approvevendor>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>approve
+                                                    vendor</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/approve-vendor/68da63e76550f207e9b18a8f
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-approvevendor class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Admin-getallusers>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-getallusers>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all
+                                                    users</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/users
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-getallusers class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Admin-getalltransactions>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-getalltransactions>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all
+                                                    transactions</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/transactions
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-getalltransactions class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Admin-getalldeliveryguys>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-getalldeliveryguys>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all
+                                                    delivery-guys</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/delivery-guys
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-getalldeliveryguys class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Admin-geteveryone>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-geteveryone>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get
+                                                    everyone</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/get-everyone
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-geteveryone class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Admin-makeuseranadmin_28mustbeauser_29>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-makeuseranadmin_28mustbeauser_29>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>make user an admin
+                                                    (must be a user)</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/make-admin/68dc23ce6d7a1c7cb4e0f16d
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-makeuseranadmin_28mustbeauser_29
+                                        class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Admin-banuser>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-banuser>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>ban user</strong>
+                                                &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/ban/68d446340bdcb42df57dfd98
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-banuser class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Admin-liftban>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Admin
+                                            href=#collapse-Admin-liftban>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>lift ban</strong>
+                                                &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/admin/lift-ban/68d446340bdcb42df57dfd98
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Admin-liftban class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class=panel-heading>
+                        <h3 class=panel-title id=Delivery>Delivery
+                            <span class=badge>9</span>
+                        </h3>
+                    </div>
+                    <div class=panel-body>
+                        <p>
+                        <div class=request-item>
+                            <div class=panel-group id=accordion-Delivery>
+                                <div class="panel panel-success" id=jump-Delivery-applyasdeliveryguy>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-success data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-applyasdeliveryguy>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>apply as delivery
+                                                    guy</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-success">POST</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/apply
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-applyasdeliveryguy class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Delivery-getalldeliveryguys>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-getalldeliveryguys>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get all delivery
+                                                    guys</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-getalldeliveryguys class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Delivery-toggledeliverystatus>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-toggledeliverystatus>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>toggle delivery
+                                                    status</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/toggle-status
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-toggledeliverystatus class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Delivery-getmycurrentdelivery>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-getmycurrentdelivery>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get my current
+                                                    delivery</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/my-current
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-getmycurrentdelivery class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Delivery-getavailabledeliveries>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-getavailabledeliveries>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get available
+                                                    deliveries</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/available
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-getavailabledeliveries class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Delivery-markorderdelivered>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-warning data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-markorderdelivered>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>mark order
+                                                    delivered</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/68dee0165aa521ca2647b833/delivered
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-markorderdelivered class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-info" id=jump-Delivery-getmydeliveryhistory>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-info data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-getmydeliveryhistory>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>get my delivery
+                                                    history</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-info">GET</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/my-history
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-getmydeliveryhistory class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-success" id=jump-Delivery-claimdelivery>
+                                    <div class=panel-heading><small class="pull-right text-muted"></small><a
+                                            class=text-success data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-claimdelivery>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>claim
+                                                    delivery</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-success">POST</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/claim/68dee0165aa521ca2647b833
+                                            </h4>
+                                        </a></div>
+                                    <div id=collapse-Delivery-claimdelivery class="panel-collapse collapse">
+                                        <div class=panel-body></div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-warning" id=jump-Delivery-canceldelivery>
+                                    <div class=panel-heading><small class="pull-right text-muted">raw</small>
+                                        <a class=text-warning data-toggle=collapse data-parent=#accordion-Delivery
+                                            href=#collapse-Delivery-canceldelivery>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>cancel
+                                                    delivery</strong> &nbsp;|&nbsp;
+                                                <strong class="request-method border-warning">PATCH</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/api/v1/delivery/68dee0165aa521ca2647b833/cancel
+                                            </h4>
+                                        </a>
+                                    </div>
+                                    <div id=collapse-Delivery-canceldelivery class="panel-collapse collapse">
+                                        <div class=panel-body>
+                                            <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
+                                                &#34;reason&#34;: &#34;food compromised&#34;
+                                                }</span>
+                                            <div class=clearfix></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <br><br>
-    <script src="./browser-app.js"></script>
+    <script src="browser-app.js"></script><br><br>
     <footer class="navbar-default navbar-fixed-bottom">
         <div class=container-fluid>
             <div class="span12 text-center"><span data-toggle=tooltip
                     title="If the application help you, please feel free to give a star to the project in github. Your star inspire me to work more on open-source projects like this!">Generated
-                    at 2025-08-22 14:32:41 by <a href=https://github.com/thedevsaddam/docgen target=_blank
+                    at 2025-10-02 23:39:11 by <a href=https://github.com/thedevsaddam/docgen target=_blank
                         class=text-muted>docgen</a></span></div>
         </div>
     </footer>

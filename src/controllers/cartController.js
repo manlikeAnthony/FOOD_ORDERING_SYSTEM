@@ -19,10 +19,15 @@ const addToCart = async (req, res) => {
   const userId = req.user.userId;
 
   try {
-    const product = await Product.findById(productId);
     
+    if(!userId){
+      throw new CustomError.BadRequestError("user must be logged in to access this route")
+    }
+
+    const product = await Product.findById(productId);
+
     if (!product) {
-      throw CustomError.NotFoundError(
+      throw new CustomError.NotFoundError(
         `Product with id ${productId} not found `
       );
     }
@@ -32,9 +37,21 @@ const addToCart = async (req, res) => {
     if (!cart) {
       cart = await Cart.create({
         user: userId,
+        vendor: product.vendor._id,
         items: [{ product: productId, quantity }],
       });
     } else {
+      if (
+        cart.vendor &&
+        cart.vendor.toString() !== product.vendor._id.toString()
+      ) {
+        throw new CustomError.BadRequestError(
+          "Cart contains products from another vendor. Checkout first."
+        );
+      }
+
+      // if vendor matches or empty, set/update items
+      cart.vendor = product.vendor._id;
       const index = cart.items.findIndex(
         (item) => item.product.toString() === productId
       );
@@ -97,7 +114,7 @@ const removeFromCart = async (req, res) => {
     );
 
     if (!cart) {
-      throw CustomError.NotFoundError(`Cart not found`);
+      throw new CustomError.NotFoundError(`Cart not found`);
     }
 
     const initialLength = cart.items.length;

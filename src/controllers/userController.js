@@ -93,6 +93,31 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const updateLocation = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const { address } = req.body;
+    
+    if(!address){
+      throw new CustomError.BadRequestError('address not provided')
+    }
+
+    const user = await User.findById(userId);
+    user.geoAddress.address = address || undefined;
+    await user.save(); // triggers pre-save hook → re-geocode
+
+    res.json(
+      response({
+        msg: "Location updated",
+        data: { geoAddress: user.geoAddress },
+      })
+    );
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json(response({ msg: error.message }));
+  }
+};
 module.exports = {
   getEveryone,
   getAllAdmins,
@@ -100,4 +125,5 @@ module.exports = {
   getSingleUser,
   showCurrentUser,
   deleteUser,
+  updateLocation
 };

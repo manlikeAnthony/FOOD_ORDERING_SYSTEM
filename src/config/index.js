@@ -28,6 +28,9 @@ const CONFIG = {
   URL: {
     BASE_URL: process.env.BASE_URL,
   },
+  MAP:{
+    MAPQUEST_KEY : process.env.MAPQUEST_API_KEY
+  }
 };
 
 module.exports = CONFIG;

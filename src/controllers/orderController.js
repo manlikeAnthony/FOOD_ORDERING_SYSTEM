@@ -1,22 +1,36 @@
-const axios = require('axios')
+const axios = require("axios");
 const crypto = require("crypto");
 const User = require("../models/User");
 const Cart = require("../models/Cart");
 const CustomError = require("../errors");
 const Order = require("../models/Order");
-const CONFIG = require('../config/index');
+const CONFIG = require("../config/index");
 const Product = require("../models/Product");
 const { checkPermissions } = require("../utils");
 const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
-const stripe = require("stripe")(process.env.STRIPE_API_KEY);
 const Transaction = require("../models/Transaction");
-const sendReceiptEmail = require('../utils/sendRecieptEmail')
+const sendReceiptEmail = require("../utils/sendRecieptEmail");
+const Vendor = require("../models/Vendor");
+const geocoder = require("../utils/geocoder");
+const Delivery = require("../models/Delivery");
 
 const createOrder = async (req, res, next) => {
   try {
     const userId = req.user.userId;
+    const { dropOffLocation } = req.body;
 
+    const user = await User.findById(userId);
+
+    // ✅ Determine the drop-off address
+    const dropOffAddress = dropOffLocation || user.geoAddress.address;
+    if (!dropOffAddress) {
+      throw new CustomError.BadRequestError(
+        "Please provide a drop-off address or set a default one in your profile"
+      );
+    }
+
+    // ✅ Get cart
     const cart = await Cart.findOne({ user: userId }).populate(
       "items.product",
       "name price"
@@ -26,6 +40,11 @@ const createOrder = async (req, res, next) => {
       throw new CustomError.BadRequestError("Your cart is empty");
     }
 
+    if (!cart.vendor) {
+      throw new CustomError.BadRequestError("Cart has no vendor");
+    }
+
+    // ✅ Build order items
     let orderItems = [];
     let subtotal = 0;
 
@@ -43,17 +62,23 @@ const createOrder = async (req, res, next) => {
     const shippingFee = 500; // NGN 500 example
     const total = subtotal + tax + shippingFee;
 
+    // ✅ Create order
     const order = await Order.create({
       user: userId,
+      vendor: cart.vendor._id,
       orderItems,
       subtotal,
       tax,
       shippingFee,
       total,
       status: "pending",
+      dropOffLocation: {
+        address: dropOffAddress,
+      },
     });
 
-    const paystackAmount = total * 100;
+    // ✅ Paystack initialize
+    const paystackAmount = total * 100; // convert to kobo
 
     const paystackResponse = await axios.post(
       "https://api.paystack.co/transaction/initialize",
@@ -76,17 +101,16 @@ const createOrder = async (req, res, next) => {
 
     const { authorization_url, reference } = paystackResponse.data.data;
     order.reference = reference;
-
     await order.save();
 
     return res.status(StatusCodes.OK).json(
       response({
         status: "success",
-        data: { url: authorization_url, reference: reference },
+        data: { url: authorization_url, reference: reference, dropOffAddress },
       })
     );
   } catch (error) {
-      console.error("CreateOrder error:", error); // Log entire error
+    console.error("CreateOrder error:", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(
       response({
         status: "error",
@@ -107,7 +131,7 @@ const paystackCallback = async (req, res) => {
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+          Authorization: `Bearer ${CONFIG.PAYSTACK.SECRET_KEY}`,
         },
       }
     );
@@ -115,12 +139,16 @@ const paystackCallback = async (req, res) => {
     const paymentData = verifyRes.data.data;
     const order = await Order.findOne({ reference });
 
-    if (!order) throw new CustomError.NotFoundError("Order not found");
+    if (!order) {
+      throw new CustomError.NotFoundError("Order not found");
+    }
 
     // Update order status
     if (paymentData.status === "success") {
       order.status = "paid";
+
       await order.save();
+
       return res.status(StatusCodes.OK).json(
         response({
           status: "success",
@@ -130,6 +158,7 @@ const paystackCallback = async (req, res) => {
       );
     } else {
       order.status = "failed";
+
       await order.save();
       return res.status(StatusCodes.BAD_REQUEST).json(
         response({
@@ -181,7 +210,8 @@ const webhook = async (req, res, next) => {
           .status(404)
           .json({ status: "error", message: "Order not found" });
       }
-
+      const vendor = await Vendor.findById(order.vendor._id);
+      const user = await User.findById(order.user._id);
       // Create or update Transaction
       let transaction = await Transaction.findOne({
         reference: data.reference,
@@ -189,9 +219,10 @@ const webhook = async (req, res, next) => {
       if (!transaction) {
         transaction = await Transaction.create({
           user: order.user._id,
+          vendor: order.vendor._id,
           order: order._id,
           reference: data.reference,
-          amount: data.amount/100,
+          amount: data.amount / 100,
           currency: data.currency,
           status: "success",
           gatewayResponse: data.gateway_response,
@@ -219,6 +250,19 @@ const webhook = async (req, res, next) => {
         reference: data.reference,
       });
 
+      await Delivery.create({
+        order: order._id,
+        vendor: order.vendor._id,
+        customer: order.user._id,
+        pickupLocation: {
+          address: vendor.geoAddress.address,
+        },
+        dropoffLocation: { address: order.dropOffLocation.address },
+      });
+
+      order.status = "in-transit"
+      await order.save()
+      
       return res
         .status(200)
         .json({ status: "success", message: "Webhook processed" });
@@ -302,7 +346,8 @@ const cancelOrder = async (req, res, next) => {
       throw new CustomError.BadRequestError("Cannot cancel a paid order");
     }
 
-    await order.remove();
+    order.status = "cancelled";
+    await order.save();
     res.status(StatusCodes.OK).json(response({ msg: "Order canceled" }));
   } catch (error) {
     res.status(StatusCodes.BAD_REQUEST).json(response({ msg: error.message }));

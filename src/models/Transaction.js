@@ -12,6 +12,11 @@ const TransactionSchema = new mongoose.Schema(
       ref: "Order",
       required: true,
     },
+    vendor:{
+      type : mongoose.Schema.ObjectId,
+      ref : 'Vendor',
+      required:true
+    },
     reference: {
       type: String,
       required: true,

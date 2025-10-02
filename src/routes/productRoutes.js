@@ -22,7 +22,7 @@ router
   .post(
     [authenticateUser, authorizeRoles("vendor"), upload.array("image" , 5)],
     createProduct
-  ).get(authenticateUser, authorizeRoles("vendor" , "admin"), getAllProducts);
+  ).get(authenticateUser, getAllProducts);
 
 router.route("/vendor/:id").get(authenticateUser, getVendorProducts);
 

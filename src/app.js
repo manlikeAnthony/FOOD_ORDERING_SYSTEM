@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("express-async-errors");
+require('./utils/handleDelivery')
 
 const express = require("express");
 const app = express();
@@ -26,10 +27,13 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const authRouter = require("./routes/authRoutes");
 const userRouter = require("./routes/userRoutes");
 const cartRouter = require("./routes/cartRoutes");
+const adminRouter = require("./routes/adminRoutes");
 const orderRouter = require("./routes/orderRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const vendorRouter = require("./routes/vendorRoutes");
-const productRoutes = require("./routes/productRoutes");
+const productRouter = require("./routes/productRoutes");
+const deliveryRouter = require('./routes/deliveryRoutes');
+const transactionRouter = require('./routes/transactionRoutes')
 
 app.post(
   "/api/v1/order/webhook",
@@ -46,7 +50,15 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors());
+
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // React dev frontend
+    "https://your-frontend-domain.com" // production frontend
+  ],
+  credentials: true, // allow cookies & authorization headers
+}));
+
 app.use(xss());
 app.use(mongoSanitize());
 
@@ -61,20 +73,23 @@ app.use(express.static("./public"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "food-ordering-docs.html"));
+  res.sendFile(path.join(__dirname, "public", "api-docs_main2.html"));
 });
 
 app.get("/docs", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "food-ordering-docs.html"));
+  res.sendFile(path.join(__dirname, "public", "api-docs_main2.html"));
 });
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/cart", cartRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/vendor", vendorRouter);
 app.use("/api/v1/reviews", reviewRouter);
-app.use("/api/v1/product", productRoutes);
+app.use("/api/v1/product", productRouter);
+app.use("/api/v1/delivery", deliveryRouter);
+app.use("/api/v1/transaction", transactionRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);

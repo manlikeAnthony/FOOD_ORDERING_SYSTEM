@@ -14,7 +14,7 @@ const { StatusCodes } = require("http-status-codes");
 const { registerValidator, loginValidator } = require("../validator/validate");
 
 const register = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name , address} = req.body;
   const { error, value } = registerValidator(req.body);
   if (error) {
     console.log(error);
@@ -38,6 +38,7 @@ const register = async (req, res) => {
     name,
     email,
     role,
+    geoAddress : {address},
     password,
     verificationToken,
   });
@@ -88,6 +89,10 @@ const login = async (req, res) => {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
 
+  if(user.status == "banned"){
+    throw new CustomError.UnauthenticatedError("user has been banned contact support for futher complaints")
+  }
+
   const isPasswordCorrect = await user.comparePassword(password);
   if (!isPasswordCorrect) {
     throw new CustomError.UnauthenticatedError("invalid credentials");
@@ -104,18 +109,26 @@ const login = async (req, res) => {
   const existingToken = await Token.findOne({ user: user._id });
   if (existingToken) {
     const { isValid } = existingToken;
+    
     if (!isValid) {
       throw new CustomError.UnauthenticatedError("invalid credentials");
     }
+
     refreshToken = existingToken.refreshToken;
+    
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
+    
     res.status(StatusCodes.OK).json({ tokenUser });
     return;
   }
   refreshToken = crypto.randomBytes(40).toString("hex");
+  
   const userAgent = req.headers["user-agent"];
+  
   const ip = req.ip;
+  
   const userToken = { refreshToken, userAgent, ip, user: user._id };
+  
   await Token.create(userToken);
 
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
@@ -175,7 +188,7 @@ const resetPassword = async (req, res) => {
   if (user) {
     const currentDate = new Date();
     if (
-      user.passwordToken === createHash(token) ||
+      user.passwordToken === createHash(token) &&
       user.passwordTokenExpirationDate > currentDate
     ) {
       user.password = password;

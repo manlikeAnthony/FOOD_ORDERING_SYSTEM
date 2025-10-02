@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const CustomError = require("../errors");
 const Vendor = require("../models/Vendor");
+const geocoder = require('../utils/geocoder')
 const { checkPermissions } = require("../utils");
 const response = require("../responses/response");
 const { StatusCodes } = require("http-status-codes");
@@ -26,6 +27,29 @@ const applyAsVendor = async (req, res) => {
       );
     }
     const { name, email, phone, address, description } = value;
+
+    const existingVendor = await User.findById(req.user.userId)
+
+    if(existingVendor.role === "vendor"){
+      throw new CustomError.BadRequestError("This account is already tied to a vendor")
+    }
+
+    const loc = await geocoder.geocode(address);
+
+    if (!loc || loc.length === 0) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: "Could not geocode the provided address" });
+    }
+    
+    const geoAddress = {
+      address,
+      location: {
+        type: "Point",
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+      },
+    };
 
     const existing = await Vendor.findOne({ user: req.user.userId });
 
@@ -55,14 +79,13 @@ const applyAsVendor = async (req, res) => {
       name,
       email,
       phone,
-      address,
+      geoAddress,
       description,
     };
 
-    if (fileName) vendorData.logo = fileName; 
+    if (fileName) vendorData.logo = fileName;
 
     const vendor = await Vendor.create(vendorData);
-
 
     const user = await User.findById(req.user.userId);
     user.role = "vendor";

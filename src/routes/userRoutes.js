@@ -12,6 +12,7 @@ const {
   getSingleUser,
   showCurrentUser,
   deleteUser,
+  updateLocation
 } = require("../controllers/userController");
 
 router.route("/").get(authenticateUser, authorizeRoles("admin"), getAllUsers);
@@ -25,6 +26,8 @@ router
   .get(authenticateUser, authorizeRoles("admin"), getAllAdmins);
 
 router.route("/showMe").get(authenticateUser, showCurrentUser);
+
+router.route("/location").patch(authenticateUser, updateLocation);
 
 router
   .route("/:id")
