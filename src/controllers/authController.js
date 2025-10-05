@@ -14,7 +14,7 @@ const { StatusCodes } = require("http-status-codes");
 const { registerValidator, loginValidator } = require("../validator/validate");
 
 const register = async (req, res) => {
-  const { email, password, name , address} = req.body;
+  const { email, password, name, address } = req.body;
   const { error, value } = registerValidator(req.body);
   if (error) {
     console.log(error);
@@ -38,17 +38,25 @@ const register = async (req, res) => {
     name,
     email,
     role,
-    geoAddress : {address},
+    geoAddress: { address },
     password,
     verificationToken,
   });
   const origin = "http://localhost:3000"; //incase a frontend is created make sure you match this with the name
-  await sendVerificationEmail({
-    name: user.name,
-    email: user.email,
-    verificationToken: user.verificationToken,
-    origin,
-  });
+
+  try {
+    await sendVerificationEmail({
+      name: user.name,
+      email: user.email,
+      verificationToken: user.verificationToken,
+      origin,
+    });
+  } catch (err) {
+    await User.findByIdAndDelete(user._id);
+    throw new CustomError.BadRequestError(
+      "Failed to send verification email. Please try again later."
+    );
+  }
   res.status(StatusCodes.CREATED).json({
     msg: "Success , please check your email to verify account",
   });
@@ -89,8 +97,10 @@ const login = async (req, res) => {
     throw new CustomError.UnauthenticatedError("invalid credentials");
   }
 
-  if(user.status == "banned"){
-    throw new CustomError.UnauthenticatedError("user has been banned contact support for futher complaints")
+  if (user.status == "banned") {
+    throw new CustomError.UnauthenticatedError(
+      "user has been banned contact support for futher complaints"
+    );
   }
 
   const isPasswordCorrect = await user.comparePassword(password);
@@ -109,26 +119,26 @@ const login = async (req, res) => {
   const existingToken = await Token.findOne({ user: user._id });
   if (existingToken) {
     const { isValid } = existingToken;
-    
+
     if (!isValid) {
       throw new CustomError.UnauthenticatedError("invalid credentials");
     }
 
     refreshToken = existingToken.refreshToken;
-    
+
     attachCookiesToResponse({ res, user: tokenUser, refreshToken });
-    
+
     res.status(StatusCodes.OK).json({ tokenUser });
     return;
   }
   refreshToken = crypto.randomBytes(40).toString("hex");
-  
+
   const userAgent = req.headers["user-agent"];
-  
+
   const ip = req.ip;
-  
+
   const userToken = { refreshToken, userAgent, ip, user: user._id };
-  
+
   await Token.create(userToken);
 
   attachCookiesToResponse({ res, user: tokenUser, refreshToken });
