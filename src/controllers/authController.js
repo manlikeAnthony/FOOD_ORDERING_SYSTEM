@@ -51,8 +51,9 @@ const register = async (req, res) => {
       verificationToken: user.verificationToken,
       origin,
     });
+
   } catch (err) {
-    console.error("Email error:", err.message);
+    console.log("Email error:", err);
     await User.findByIdAndDelete(user._id);
     throw new CustomError.BadRequestError(
       "Failed to send verification email. Please try again later."

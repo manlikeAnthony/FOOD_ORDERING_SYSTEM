@@ -127,7 +127,7 @@ const getAllDeliveryGuys = async (req, res) => {
       .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
       .json(response({ msg: error.message }));
   }
-};
+}; 
 
 const banUser = async (req, res) => {
   try {
