@@ -30,6 +30,9 @@ const CONFIG = {
   },
   MAP:{
     MAPQUEST_KEY : process.env.MAPQUEST_API_KEY
+  },
+  RESEND:{
+    API_KEY : process.env.RESEND_API_KEY
   }
 };
 

@@ -15,21 +15,21 @@ const { registerValidator, loginValidator } = require("../validator/validate");
 
 const register = async (req, res) => {
   const { email, password, name, address } = req.body;
-  const { error, value } = registerValidator(req.body);
+  const { error } = registerValidator(req.body);
+
   if (error) {
-    console.log(error);
-    res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: error.details.map((details) => details.message) });
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      msg: error.details.map((details) => details.message),
+    });
   }
 
   const alreadyHasAccount = await User.findOne({ email });
   if (alreadyHasAccount) {
     throw new CustomError.BadRequestError(
-      "You already have an account here try logging in"
+      "You already have an account here, try logging in."
     );
   }
-  // // register first user as admin
+
   const isFirstAccount = (await User.countDocuments({})) === 0;
   const role = isFirstAccount ? "admin" : "user";
   const verificationToken = crypto.randomBytes(40).toString("hex");
@@ -42,46 +42,76 @@ const register = async (req, res) => {
     password,
     verificationToken,
   });
-  const origin = "http://localhost:3000"; //incase a frontend is created make sure you match this with the name
 
-  try {
-    await sendVerificationEmail({
-      name: user.name,
-      email: user.email,
-      verificationToken: user.verificationToken,
-      origin,
-    });
+  // don’t await here – send async
+  sendVerificationEmail({
+    name: user.name,
+    email: user.email,
+    verificationToken: user.verificationToken,
+    origin: "http://localhost:3000",
+  }).catch((err) => console.error("Email send failed:", err.message));
 
-  } catch (err) {
-    console.log("Email error:", err);
-    await User.findByIdAndDelete(user._id);
-    throw new CustomError.BadRequestError(
-      "Failed to send verification email. Please try again later."
-    );
-  }
   res.status(StatusCodes.CREATED).json({
-    msg: "Success , please check your email to verify account",
+    msg: "Account created. Check your email for a verification code.",
+  });
+};
+
+const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new CustomError.NotFoundError("No account found with that email.");
+  }
+
+  if (user.isVerified) {
+    throw new CustomError.BadRequestError("Account already verified.");
+  }
+
+  // generate a new token
+  user.verificationToken = crypto.randomBytes(40).toString("hex");
+  await user.save();
+
+  await sendVerificationEmail({
+    name: user.name,
+    email: user.email,
+    verificationToken: user.verificationToken,
+    origin: "http://localhost:3000",
+  });
+
+  res.status(StatusCodes.OK).json({
+    msg: "Verification email resent successfully.",
   });
 };
 
 const verifyEmail = async (req, res) => {
-  const { verificationToken, email } = req.body;
+  const { token, email } = req.query; // 👈 read from query instead of body
+
+  if (!token || !email) {
+    throw new CustomError.BadRequestError("Invalid verification link");
+  }
+
   const user = await User.findOne({ email });
   if (!user) {
-    throw new CustomError.UnauthenticatedError("verification failed");
+    throw new CustomError.NotFoundError("User not found");
   }
+
   if (user.isVerified) {
-    throw new CustomError.BadRequestError("you are already verified");
+    return res
+      .status(StatusCodes.OK)
+      .json({ msg: "Account already verified." });
   }
-  if (user.verificationToken !== verificationToken) {
-    throw new CustomError.UnauthenticatedError("verification failed");
+
+  if (user.verificationToken !== token) {
+    throw new CustomError.UnauthenticatedError("Invalid or expired token");
   }
+
   user.isVerified = true;
   user.verificationToken = "";
   user.verified = Date.now();
   await user.save();
 
-  res.status(StatusCodes.OK).json({ msg: "Email successfully Verified" });
+  res.status(StatusCodes.OK).json({ msg: "✅ Email successfully verified" });
 };
 
 const login = async (req, res) => {
@@ -219,4 +249,5 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
+  resendVerificationEmail
 };

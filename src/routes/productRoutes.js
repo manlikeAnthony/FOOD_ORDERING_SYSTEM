@@ -20,15 +20,21 @@ const upload = require("../middleware/uploadMiddleware");
 router
   .route("/")
   .post(
-    [authenticateUser, authorizeRoles("vendor"), upload.array("image" , 5)],
+    [authenticateUser, authorizeRoles("vendor"), upload.array("image", 5)],
     createProduct
-  ).get(authenticateUser, getAllProducts);
+  )
+  .get(getAllProducts);
 
 router.route("/vendor/:id").get(authenticateUser, getVendorProducts);
 
 router
   .route("/update-image/:id")
-  .patch(authenticateUser, upload.single("image"), updateProductImage);
+  .patch(
+    authenticateUser,
+    authorizeRoles("vendor"),
+    upload.single("image"),
+    updateProductImage
+  );
 
 router.route("/:id/favorite").post(authenticateUser, toggleFavorite);
 

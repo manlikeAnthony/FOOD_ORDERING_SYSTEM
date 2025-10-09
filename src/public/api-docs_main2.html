@@ -8411,6 +8411,7 @@
                             <li><a class=endpoint_menu href=#jump-Auth-forgotpassword>forgot password</a>
                             <li><a class=endpoint_menu href=#jump-Auth-resetpassword>reset password</a>
                             <li><a class=endpoint_menu href=#jump-Auth-verifyemail>verify email</a>
+                            <li><a class=endpoint_menu href=#jump-Auth-resendcode>resend-code</a>
                         </ul>
                     <li><strong><a href=#User>User</a></strong>
                         <ul>
@@ -8503,7 +8504,7 @@
                 <div class="panel panel-default">
                     <div class=panel-heading>
                         <h3 class=panel-title id=Auth>Auth
-                            <span class=badge>6</span>
+                            <span class=badge>7</span>
                         </h3>
                     </div>
                     <div class=panel-body>
@@ -8519,15 +8520,15 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/register
+                                                https://food-ordering-548c.onrender.com/auth/register
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-register class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;name&#34;: &#34;elisha&#34;,
-                                                &#34;email&#34;: &#34;elisha@gmail.com&#34;,
+                                                &#34;name&#34;: &#34;eniola&#34;,
+                                                &#34;email&#34;: &#34;eniola@gmail.com&#34;,
                                                 &#34;password&#34;: &#34;secret&#34;,
                                                 &#34;address&#34;: &#34;5, Adeola Odeku Street, Victoria Island, Lagos,
                                                 Nigeria&#34;
@@ -8545,14 +8546,14 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/login
+                                                https://food-ordering-548c.onrender.com/auth/login
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-login class="panel-collapse collapse">
                                         <div class=panel-body>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;email&#34;:&#34;elisha@gmail.com&#34;,
+                                                &#34;email&#34;:&#34;eniola@gmail.com&#34;,
                                                 &#34;password&#34;:&#34;secret&#34;
                                                 }</span>
                                             <div class=clearfix></div>
@@ -8568,7 +8569,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/logout
+                                                https://food-ordering-548c.onrender.com/auth/logout
                                             </h4>
                                         </a>
                                     </div>
@@ -8591,7 +8592,7 @@
                                                     password</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/forgot-password
+                                                https://food-ordering-548c.onrender.com/auth/forgot-password
                                             </h4>
                                         </a>
                                     </div>
@@ -8613,7 +8614,7 @@
                                                     password</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/reset-password
+                                                https://food-ordering-548c.onrender.com/auth/reset-password
                                             </h4>
                                         </a>
                                     </div>
@@ -8637,16 +8638,55 @@
                                                     email</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/auth/verify-email
+                                                https://food-ordering-548c.onrender.com/auth/verify-email
                                             </h4>
                                         </a>
                                     </div>
                                     <div id=collapse-Auth-verifyemail class="panel-collapse collapse">
                                         <div class=panel-body>
+                                            <h5 class="label label-info">Query</h5>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Key
+                                                        <th>Value
+                                                        <th>Description
+                                                <tbody>
+                                                    <tr>
+                                                        <td>token
+                                                        <td>63b23b766fd8c9d8c5221239403ff18c930e92028f9c2bd5ad08500b18490b8c905e1bc97a16af75
+                                                        <td>
+                                                    <tr>
+                                                        <td>email
+                                                        <td>eniola@gmail.com
+                                                        <td>
+                                            </table>
                                             <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
-                                                &#34;email&#34;:&#34;elisha@gmail.com&#34;,
+                                                &#34;email&#34;:&#34;peter@gmail.com&#34;,
                                                 &#34;verificationToken&#34;:
-                                                &#34;88f76a6e12a986f8671201f65cc6481229819033f403398c7cc5c0bbd2764c20f98ae6910a3ffabf&#34;
+                                                &#34;7b5fd6ae0d4fa86b45acf3987a272c00be21021ea791b83d03ea81885e4e4d84dade4169b399f9a8&#34;
+                                                }</span>
+                                            <div class=clearfix></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-success" id=jump-Auth-resendcode>
+                                    <div class=panel-heading><small class="pull-right text-muted">raw</small>
+                                        <a class=text-success data-toggle=collapse data-parent=#accordion-Auth
+                                            href=#collapse-Auth-resendcode>
+                                            <h4 class=panel-title><span
+                                                    class="glyphicon glyphicon-plus"></span><strong>resend-code</strong>
+                                                &nbsp;|&nbsp;
+                                                <strong class="request-method border-success">POST</strong>
+                                                &nbsp;
+                                                https://food-ordering-548c.onrender.com/auth/resend-code
+                                            </h4>
+                                        </a>
+                                    </div>
+                                    <div id=collapse-Auth-resendcode class="panel-collapse collapse">
+                                        <div class=panel-body>
+                                            <h5 class="label label-primary">Body</h5><span class=resp-prettyprint>{
+                                                &#34;email&#34; : &#34;eniola@gmail.com&#34;
                                                 }</span>
                                             <div class=clearfix></div>
                                         </div>
@@ -8676,7 +8716,7 @@
                                                     admins</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user/admins
+                                                https://food-ordering-548c.onrender.com/user/admins
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-getalladmins class="panel-collapse collapse">
@@ -8692,7 +8732,7 @@
                                                     users</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user
+                                                https://food-ordering-548c.onrender.com/user
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-Getallusers class="panel-collapse collapse">
@@ -8708,7 +8748,7 @@
                                                     user</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user/showMe
+                                                https://food-ordering-548c.onrender.com/user/showMe
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-showcurrentuser class="panel-collapse collapse">
@@ -8724,7 +8764,7 @@
                                                     user</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user/689a69fac14d6258a4da80da
+                                                https://food-ordering-548c.onrender.com/user/689a69fac14d6258a4da80da
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-getsingleuser class="panel-collapse collapse">
@@ -8740,7 +8780,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user/6898b45997dceb7a3df2275a
+                                                https://food-ordering-548c.onrender.com/user/6898b45997dceb7a3df2275a
                                             </h4>
                                         </a></div>
                                     <div id=collapse-User-deleteuser class="panel-collapse collapse">
@@ -8756,7 +8796,7 @@
                                                     location</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/user/location
+                                                https://food-ordering-548c.onrender.com/user/location
                                             </h4>
                                         </a>
                                     </div>
@@ -8792,7 +8832,7 @@
                                                     vendor</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/apply
+                                                https://food-ordering-548c.onrender.com/vendor/apply
                                             </h4>
                                         </a>
                                     </div>
@@ -8843,7 +8883,7 @@
                                                     Profile</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/me
+                                                https://food-ordering-548c.onrender.com/vendor/me
                                             </h4>
                                         </a>
                                     </div>
@@ -8872,7 +8912,7 @@
                                                     Profile</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/me
+                                                https://food-ordering-548c.onrender.com/vendor/me
                                             </h4>
                                         </a>
                                     </div>
@@ -8894,7 +8934,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/approve/689e47d9809b10bd0e975015
+                                                https://food-ordering-548c.onrender.com/vendor/approve/689e47d9809b10bd0e975015
                                             </h4>
                                         </a>
                                     </div>
@@ -8923,7 +8963,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/update-logo
+                                                https://food-ordering-548c.onrender.com/vendor/update-logo
                                             </h4>
                                         </a>
                                     </div>
@@ -8954,7 +8994,7 @@
                                                     vendors</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor
+                                                https://food-ordering-548c.onrender.com/vendor
                                             </h4>
                                         </a>
                                     </div>
@@ -8983,7 +9023,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/vendor/delete-logo
+                                                https://food-ordering-548c.onrender.com/vendor/delete-logo
                                             </h4>
                                         </a>
                                     </div>
@@ -9028,7 +9068,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product
+                                                https://food-ordering-548c.onrender.com/product
                                             </h4>
                                         </a>
                                     </div>
@@ -9079,7 +9119,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product
+                                                https://food-ordering-548c.onrender.com/product
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getallproduct class="panel-collapse collapse">
@@ -9095,7 +9135,7 @@
                                                     products</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product/vendor/689e47d9809b10bd0e975015
+                                                https://food-ordering-548c.onrender.com/product/vendor/689e47d9809b10bd0e975015
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getvendorproducts class="panel-collapse collapse">
@@ -9111,7 +9151,7 @@
                                                     product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product/68ac55a8def9f02cc1a172df
+                                                https://food-ordering-548c.onrender.com/product/68ac55a8def9f02cc1a172df
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Product-getsingleproduct class="panel-collapse collapse">
@@ -9127,7 +9167,7 @@
                                                     Product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product/68928fddc432ea129ae13904
+                                                https://food-ordering-548c.onrender.com/product/68928fddc432ea129ae13904
                                             </h4>
                                         </a>
                                     </div>
@@ -9149,7 +9189,7 @@
                                                     Product</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product/68928fddc432ea129ae13904
+                                                https://food-ordering-548c.onrender.com/product/68928fddc432ea129ae13904
                                             </h4>
                                         </a>
                                     </div>
@@ -9171,7 +9211,7 @@
                                                     image</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/product/update-image/68a3a6c628939dd0ad9c386c
+                                                https://food-ordering-548c.onrender.com/product/update-image/68a3a6c628939dd0ad9c386c
                                             </h4>
                                         </a>
                                     </div>
@@ -9216,7 +9256,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/cart
+                                                https://food-ordering-548c.onrender.com/cart
                                             </h4>
                                         </a>
                                     </div>
@@ -9239,7 +9279,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/cart
+                                                https://food-ordering-548c.onrender.com/cart
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-getcart class="panel-collapse collapse">
@@ -9255,7 +9295,7 @@
                                                     cart</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/cart/689673305d51059e628e3cf5
+                                                https://food-ordering-548c.onrender.com/cart/689673305d51059e628e3cf5
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-removefromcart class="panel-collapse collapse">
@@ -9271,7 +9311,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/cart
+                                                https://food-ordering-548c.onrender.com/cart
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Cart-clearcart class="panel-collapse collapse">
@@ -9301,7 +9341,7 @@
                                                     Order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order
+                                                https://food-ordering-548c.onrender.com/order
                                             </h4>
                                         </a>
                                     </div>
@@ -9324,7 +9364,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order
+                                                https://food-ordering-548c.onrender.com/order
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-GetAllOrders_28admin_29 class="panel-collapse collapse">
@@ -9340,7 +9380,7 @@
                                                     orders</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order/my-orders
+                                                https://food-ordering-548c.onrender.com/order/my-orders
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-getmyorders class="panel-collapse collapse">
@@ -9356,7 +9396,7 @@
                                                     order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-getsingleorder class="panel-collapse collapse">
@@ -9372,7 +9412,7 @@
                                                     (admin)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-updateorderstatus_28admin_29 class="panel-collapse collapse">
@@ -9388,7 +9428,7 @@
                                                     order</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/order/6898b78274a53d1c4b535ab6
+                                                https://food-ordering-548c.onrender.com/order/6898b78274a53d1c4b535ab6
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Order-cancelorder class="panel-collapse collapse">
@@ -9418,7 +9458,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/reviews
+                                                https://food-ordering-548c.onrender.com/reviews
                                             </h4>
                                         </a>
                                     </div>
@@ -9443,7 +9483,7 @@
                                                     reviews</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/reviews
+                                                https://food-ordering-548c.onrender.com/reviews
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-getallreviews class="panel-collapse collapse">
@@ -9459,7 +9499,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/reviews/6898c693d8a7f2b2ec1f89ea
+                                                https://food-ordering-548c.onrender.com/reviews/6898c693d8a7f2b2ec1f89ea
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-getsinglereview class="panel-collapse collapse">
@@ -9475,7 +9515,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/reviews/6898c693d8a7f2b2ec1f89ea
+                                                https://food-ordering-548c.onrender.com/reviews/6898c693d8a7f2b2ec1f89ea
                                             </h4>
                                         </a>
                                     </div>
@@ -9499,7 +9539,7 @@
                                                     review</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-danger">DELETE</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/reviews/123
+                                                https://food-ordering-548c.onrender.com/reviews/123
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Reviews-deletereview class="panel-collapse collapse">
@@ -9529,7 +9569,7 @@
                                                     admin</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin
+                                                https://food-ordering-548c.onrender.com/admin
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-getalladmin class="panel-collapse collapse">
@@ -9545,7 +9585,7 @@
                                                     vendor</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/approve-vendor/68da63e76550f207e9b18a8f
+                                                https://food-ordering-548c.onrender.com/admin/approve-vendor/68da63e76550f207e9b18a8f
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-approvevendor class="panel-collapse collapse">
@@ -9561,7 +9601,7 @@
                                                     users</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/users
+                                                https://food-ordering-548c.onrender.com/admin/users
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-getallusers class="panel-collapse collapse">
@@ -9577,7 +9617,7 @@
                                                     transactions</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/transactions
+                                                https://food-ordering-548c.onrender.com/admin/transactions
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-getalltransactions class="panel-collapse collapse">
@@ -9593,7 +9633,7 @@
                                                     delivery-guys</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/delivery-guys
+                                                https://food-ordering-548c.onrender.com/admin/delivery-guys
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-getalldeliveryguys class="panel-collapse collapse">
@@ -9609,7 +9649,7 @@
                                                     everyone</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/get-everyone
+                                                https://food-ordering-548c.onrender.com/admin/get-everyone
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-geteveryone class="panel-collapse collapse">
@@ -9625,7 +9665,7 @@
                                                     (must be a user)</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/make-admin/68dc23ce6d7a1c7cb4e0f16d
+                                                https://food-ordering-548c.onrender.com/admin/make-admin/68dc23ce6d7a1c7cb4e0f16d
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-makeuseranadmin_28mustbeauser_29
@@ -9642,7 +9682,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/ban/68d446340bdcb42df57dfd98
+                                                https://food-ordering-548c.onrender.com/admin/ban/68d446340bdcb42df57dfd98
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-banuser class="panel-collapse collapse">
@@ -9658,7 +9698,7 @@
                                                 &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/admin/lift-ban/68d446340bdcb42df57dfd98
+                                                https://food-ordering-548c.onrender.com/admin/lift-ban/68d446340bdcb42df57dfd98
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Admin-liftban class="panel-collapse collapse">
@@ -9688,7 +9728,7 @@
                                                     guy</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/apply
+                                                https://food-ordering-548c.onrender.com/delivery/apply
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-applyasdeliveryguy class="panel-collapse collapse">
@@ -9704,7 +9744,7 @@
                                                     guys</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery
+                                                https://food-ordering-548c.onrender.com/delivery
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-getalldeliveryguys class="panel-collapse collapse">
@@ -9720,7 +9760,7 @@
                                                     status</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/toggle-status
+                                                https://food-ordering-548c.onrender.com/delivery/toggle-status
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-toggledeliverystatus class="panel-collapse collapse">
@@ -9736,7 +9776,7 @@
                                                     delivery</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/my-current
+                                                https://food-ordering-548c.onrender.com/delivery/my-current
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-getmycurrentdelivery class="panel-collapse collapse">
@@ -9752,7 +9792,7 @@
                                                     deliveries</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/available
+                                                https://food-ordering-548c.onrender.com/delivery/available
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-getavailabledeliveries class="panel-collapse collapse">
@@ -9768,7 +9808,7 @@
                                                     delivered</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/68dee0165aa521ca2647b833/delivered
+                                                https://food-ordering-548c.onrender.com/delivery/68dee0165aa521ca2647b833/delivered
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-markorderdelivered class="panel-collapse collapse">
@@ -9784,7 +9824,7 @@
                                                     history</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-info">GET</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/my-history
+                                                https://food-ordering-548c.onrender.com/delivery/my-history
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-getmydeliveryhistory class="panel-collapse collapse">
@@ -9800,7 +9840,7 @@
                                                     delivery</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-success">POST</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/claim/68dee0165aa521ca2647b833
+                                                https://food-ordering-548c.onrender.com/delivery/claim/68dee0165aa521ca2647b833
                                             </h4>
                                         </a></div>
                                     <div id=collapse-Delivery-claimdelivery class="panel-collapse collapse">
@@ -9816,7 +9856,7 @@
                                                     delivery</strong> &nbsp;|&nbsp;
                                                 <strong class="request-method border-warning">PATCH</strong>
                                                 &nbsp;
-                                                https://food-ordering-548c.onrender.com/api/v1/delivery/68dee0165aa521ca2647b833/cancel
+                                                https://food-ordering-548c.onrender.com/delivery/68dee0165aa521ca2647b833/cancel
                                             </h4>
                                         </a>
                                     </div>
@@ -9841,7 +9881,7 @@
         <div class=container-fluid>
             <div class="span12 text-center"><span data-toggle=tooltip
                     title="If the application help you, please feel free to give a star to the project in github. Your star inspire me to work more on open-source projects like this!">Generated
-                    at 2025-10-02 23:39:11 by <a href=https://github.com/thedevsaddam/docgen target=_blank
+                    at 2025-10-09 23:54:05 by <a href=https://github.com/thedevsaddam/docgen target=_blank
                         class=text-muted>docgen</a></span></div>
         </div>
     </footer>
