@@ -54,7 +54,7 @@ app.use(helmet());
 app.use(cors({
   origin: [
     "http://localhost:3000", // React dev frontend
-    "https://your-frontend-domain.com" // production frontend
+    "https://chop-life-six.vercel.app", // production frontend
   ],
   credentials: true, // allow cookies & authorization headers
 }));

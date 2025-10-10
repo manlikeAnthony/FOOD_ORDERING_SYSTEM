@@ -15,6 +15,7 @@ const CONFIG = {
   EMAIL: {
     USER: process.env.EMAIL_USER || "",
     PASS: process.env.EMAIL_PASS || "",
+    SENDER : process.env.SENDER_EMAIL
   },
   AWS: {
     BUCKET_NAME: process.env.AWS_BUCKET_NAME,
@@ -31,8 +32,8 @@ const CONFIG = {
   MAP:{
     MAPQUEST_KEY : process.env.MAPQUEST_API_KEY
   },
-  RESEND:{
-    API_KEY : process.env.RESEND_API_KEY
+  MAILERSEND:{
+    API_KEY : process.env.MAILERSEND_API_KEY
   }
 };
 
