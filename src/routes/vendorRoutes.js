@@ -14,7 +14,7 @@ const {
 } = require("../controllers/vendorController");
 const upload = require("../middleware/uploadMiddleware");
 
-router.get("/", authenticateUser, authorizeRoles("admin"), getAllVendors);
+router.get("/", getAllVendors);
 
 router.post("/apply", authenticateUser, upload.single("logo"), applyAsVendor);
 
