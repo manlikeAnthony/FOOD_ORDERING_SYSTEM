@@ -129,7 +129,7 @@ const approveVendor = async (req, res) => {
 const getAllVendors = async (req, res) => {
   try {
     const vendors = await Vendor.find({})
-      .populate({ path: "user", select: "name email" })
+      .select('-user')
       .lean();
 
     for (const vendor of vendors) {
