@@ -85,7 +85,7 @@ const resendVerificationEmail = async (req, res) => {
 };
 
 const verifyEmail = async (req, res) => {
-  const { token, email } = req.query; // 👈 read from query instead of body
+  const { token, email } = req.query; //  read from query instead of body
 
   if (!token || !email) {
     throw new CustomError.BadRequestError("Invalid verification link");

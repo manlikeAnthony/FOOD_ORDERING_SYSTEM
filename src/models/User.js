@@ -113,4 +113,12 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch;
 };
+
+UserSchema.pre(
+  "deleteOne",
+  { document: true, query: false },
+  async function (next) {
+    await this.model("Vendor").deleteMany({ user: this._id });
+  }
+);
 module.exports = mongoose.model("User", UserSchema);

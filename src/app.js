@@ -5,6 +5,7 @@ require('./utils/handleDelivery')
 const express = require("express");
 const app = express();
 const CONFIG = require("./config/index");
+const PORT = process.env.PORT || 5000;
 
 //pakages
 const path = require("path");
@@ -15,6 +16,10 @@ const xss = require("xss-clean");
 const cookieParser = require("cookie-parser");
 const rateLimiter = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
+const Redis = require('ioredis')
+const {RedisStore} = require('rate-limit-redis')
+const { configureCors } = require("./config/configureCors");
+
 // database
 const connectDB = require("./database/connect");
 
@@ -33,7 +38,9 @@ const reviewRouter = require("./routes/reviewRoutes");
 const vendorRouter = require("./routes/vendorRoutes");
 const productRouter = require("./routes/productRoutes");
 const deliveryRouter = require('./routes/deliveryRoutes');
-const transactionRouter = require('./routes/transactionRoutes')
+const transactionRouter = require('./routes/transactionRoutes');
+
+app.use(configureCors())
 
 app.post(
   "/api/v1/order/webhook",
@@ -51,13 +58,6 @@ app.use(
 
 app.use(helmet());
 
-app.use(cors({
-  origin: [
-    "http://localhost:3000", // React dev frontend
-    "https://chop-life-six.vercel.app", // production frontend
-  ],
-  credentials: true, // allow cookies & authorization headers
-}));
 
 app.use(xss());
 app.use(mongoSanitize());
@@ -96,10 +96,10 @@ app.use(errorHandlerMiddleware);
 
 const start = async () => {
   try {
-    await connectDB(CONFIG.MONGO_URL);
+    await connectDB();
     app.listen(
-      CONFIG.PORT,
-      console.log(`app is listening on port ${CONFIG.PORT}...`)
+      PORT,
+      console.log(`app is listening on port ${PORT}...`)
     );
   } catch (error) {
     console.log("Failed to connect to database", error);

@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - food-app
+
+  app:
+    image: anthony119/food-ordering-app:v3
+    container_name: food-app-container
+    ports:
+      - "3000:5000"
+    environment:
+      - MONGO_URL=${MONGO_URL}
+    depends_on:
+      - mongo
+    networks:
+      - food-app
+    env_file:
+      - .env
+
+networks:
+  food-app:
+    driver: bridge
+
+volumes:
+  mongo_data:
